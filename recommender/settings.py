@@ -20,9 +20,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv('SECRET_KEY')
+SECRET_KEY = os.getenv('KOLLAB_DATA_SECRET_KEY')
 
-if os.getenv('DJANGO_ENV') == 'DEVELOPMENT':
+if os.getenv('KOLLAB_DATA_ENV') == 'development':
     # SECURITY WARNING: don't run with debug turned on in production!
     DEBUG = True
 else:
@@ -79,10 +79,10 @@ WSGI_APPLICATION = 'recommender.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.getenv('DATABASE_NAME'),
-        'USER': os.getenv('DATABASE_USERNAME'),
-        'PASSWORD': os.getenv('DATABASE_PASSWORD'),
-        'HOST': os.getenv('DATABASE_HOST'),
+        'NAME': os.getenv('KOLLAB_DATA_DATABASE_NAME'),
+        'USER': os.getenv('KOLLAB_DATA_DATABASE_USERNAME'),
+        'PASSWORD': os.getenv('KOLLAB_DATA_DATABASE_PASSWORD'),
+        'HOST': os.getenv('KOLLAB_DATA_DATABASE_HOST'),
         'PORT': '5432',
     }
 }
