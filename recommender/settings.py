@@ -26,7 +26,7 @@ if os.getenv('KOLLAB_DATA_ENV') == 'development':
     # SECURITY WARNING: don't run with debug turned on in production!
     DEBUG = True
 else:
-    DEBUG = False
+    DEBUG = True
     ALLOWED_HOSTS = ['kollab-data.herokuapp.com']
 
 # Application definition
@@ -132,13 +132,12 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
-PROJECT_ROOT = os.path.join(os.path.abspath(__file__))
-STATIC_ROOT = os.path.join(PROJECT_ROOT, 'staticfiles')
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = '/static/'
 
 # Extra lookup directories for collectstatic to find static files
 STATICFILES_DIRS = (
-    os.path.join(PROJECT_ROOT, 'static'),
+    os.path.join(BASE_DIR, 'static'),
 )
 
 #  Add configuration for static files storage using whitenoise
