@@ -12,14 +12,14 @@ class Expertise(models.Model):
 
 class User(models.Model):
     id = models.PositiveIntegerField(primary_key=True)
-    first_name = models.CharField(max_length=300)
-    last_name = models.CharField(max_length=300)
+    email = models.EmailField(default="default@kollab.default")
+    role = models.CharField(max_length=50, null=True)
+    faculty = models.CharField(max_length=150, null=True)
     expertises = models.ManyToManyField(Expertise)
-    created_at = models.DateTimeField()
-    updated_at = models.DateTimeField()
+    year = models.CharField(max_length=20, null=True)
 
     def __str__(self):
-        return self.first_name + " " + self.last_name
+        return self.email
 
 
 class Project(models.Model):
