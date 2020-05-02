@@ -6,8 +6,7 @@ from kollabStorage.models import User, Expertise, Project
 class UserTestCase(TestCase):
     def setUp(self):
         t = timezone.now().isoformat()
-        u = User.objects.create(id=1, first_name="f1",
-                                last_name="l1", created_at=t, updated_at=t)
+        u = User.objects.create(id=1, email="eit@gmail.com", role="student", faculty="SE", year="1")
         e1 = Expertise.objects.create(id=1, name="Mathematics")
         e2 = Expertise.objects.create(id=2, name="Sciences")
         u.expertises.add(e1)
@@ -25,8 +24,8 @@ class UserTestCase(TestCase):
 class ProjectTestCase(TestCase):
     def setUp(self):
         t = timezone.now().isoformat()
-        p = Project.objects.create(
-            id=1, title="Title 1", created_at=t, updated_at=t)
+        p = Project.objects.create(id=1, title="Title 1", short_desc="short desc",
+                                   long_desc="long desc", project_status=1, created_at=t, updated_at=t)
         e1 = Expertise.objects.create(id=1, name="Mathematics")
         e2 = Expertise.objects.create(id=2, name="Sciences")
         p.expertises.add(e1)
