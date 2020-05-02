@@ -1,15 +1,20 @@
 from django.core.management.base import BaseCommand, CommandError
 
 from kollabStorage.models import *
-import kollabStorage.services as services
+from kollabStorage.services import KollabApi
 
 
 class Command(BaseCommand):
     help = 'Fetch new data from Kollab server'
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.kollab_api = KollabApi()
+
+
     def fetch_users(self):
         self.stdout.write(self.style.HTTP_INFO('Fetching data...'))
-        response = services.get_users()
+        response = self.kollab_api.get_users()
         self.stdout.write('New or updated users:')
 
         for user in response:
