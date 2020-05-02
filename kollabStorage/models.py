@@ -4,7 +4,7 @@ from django.db import models
 class Expertise(models.Model):
     id = models.PositiveIntegerField(primary_key=True)
     name = models.CharField(max_length=300)
-    parent_id = models.PositiveIntegerField(null=True)
+    parent_id = models.PositiveIntegerField(null=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -25,8 +25,9 @@ class User(models.Model):
 class Project(models.Model):
     id = models.PositiveIntegerField(primary_key=True)
     title = models.CharField(max_length=300)
-    short_desc = models.TextField()
-    long_desc = models.TextField()
+    short_desc = models.TextField(null=True)
+    long_desc = models.TextField(null=True, blank=True)
+    project_status = models.SmallIntegerField(default=1, null=True)
     expertises = models.ManyToManyField(Expertise)
     created_at = models.DateTimeField()
     updated_at = models.DateTimeField()
