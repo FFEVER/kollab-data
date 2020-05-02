@@ -11,9 +11,8 @@ class Command(BaseCommand):
         super().__init__(*args, **kwargs)
         self.kollab_api = KollabApi()
 
-
     def fetch_users(self):
-        self.stdout.write(self.style.HTTP_INFO('Fetching data...'))
+        self.stdout.write(self.style.HTTP_INFO('Fetching users...'))
         response = self.kollab_api.get_users()
         self.stdout.write('New or updated users:')
 
@@ -23,6 +22,18 @@ class Command(BaseCommand):
 
         self.stdout.write(f'Total users: {len(response.json())}')
 
+    def fetch_projects(self):
+        self.stdout.write(self.style.HTTP_INFO('Fetching projects...'))
+        response = self.kollab_api.get_projects()
+        self.stdout.write('New or updated projects:')
+
+        for project in response:
+            new_project, created = User.objects.update_or_create(id=project['id'], defaults=project)
+            self.stdout.write(f'\t{new_project.__str__()}')
+
+        self.stdout.write(f'Total projects: {len(response.json())}')
+
     def handle(self, *args, **options):
         self.fetch_users()
+        self.fetch_projects()
         self.stdout.write(self.style.SUCCESS('Successfully updated data'))

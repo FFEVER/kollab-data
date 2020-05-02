@@ -32,3 +32,6 @@ class KollabApi:
 
     def get_expertises(self):
         return self.__get('/api/v1/expertises')
+
+    def get_projects(self):
+        return self.__get('/api/v1/projects')
