@@ -1,7 +1,7 @@
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 
-from kollabStorage.models import *
-from kollabStorage.services import KollabApi
+from apps.kollabStorage.models import *
+from apps.kollabStorage import KollabApi
 
 
 class Command(BaseCommand):

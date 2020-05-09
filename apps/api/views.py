@@ -4,17 +4,17 @@ from rest_framework import viewsets
 from rest_framework import mixins
 from rest_framework.exceptions import APIException
 
-from api.models import Endpoint
-from api.serializers import EndpointSerializer
+from apps.api.models import Endpoint
+from apps.api.serializers import EndpointSerializer
 
-from api.models import MLAlgorithm
-from api.serializers import MLAlgorithmSerializer
+from apps.api.models import MLAlgorithm
+from apps.api.serializers import MLAlgorithmSerializer
 
-from api.models import MLAlgorithmStatus
-from api.serializers import MLAlgorithmStatusSerializer
+from apps.api.models import MLAlgorithmStatus
+from apps.api.serializers import MLAlgorithmStatusSerializer
 
-from api.models import MLRequest
-from api.serializers import MLRequestSerializer
+from apps.api.models import MLRequest
+from apps.api.serializers import MLRequestSerializer
 
 
 class EndpointViewSet(

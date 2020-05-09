@@ -2,4 +2,4 @@ from django.apps import AppConfig
 
 
 class KollabstorageConfig(AppConfig):
-    name = 'kollabStorage'
+    name = 'apps.kollabStorage'

@@ -1,8 +1,8 @@
 from rest_framework import serializers
-from api.models import Endpoint
-from api.models import MLAlgorithm
-from api.models import MLAlgorithmStatus
-from api.models import MLRequest
+from apps.api.models import Endpoint
+from apps.api.models import MLAlgorithm
+from apps.api.models import MLAlgorithmStatus
+from apps.api.models import MLRequest
 
 
 class EndpointSerializer(serializers.ModelSerializer):
