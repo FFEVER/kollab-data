@@ -41,7 +41,7 @@ class Migration(migrations.Migration):
                 ('last_name', models.CharField(max_length=300)),
                 ('created_at', models.DateTimeField()),
                 ('updated_at', models.DateTimeField()),
-                ('expertises', models.ManyToManyField(to='kollabStorage.Expertise')),
+                ('expertises', models.ManyToManyField(to='kstorage.Expertise')),
             ],
         ),
         migrations.CreateModel(
@@ -53,7 +53,7 @@ class Migration(migrations.Migration):
                 ('long_desc', models.TextField()),
                 ('created_at', models.DateTimeField()),
                 ('updated_at', models.DateTimeField()),
-                ('expertises', models.ManyToManyField(to='kollabStorage.Expertise')),
+                ('expertises', models.ManyToManyField(to='kstorage.Expertise')),
             ],
         ),
     ]

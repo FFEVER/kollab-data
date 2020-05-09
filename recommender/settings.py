@@ -33,7 +33,7 @@ else:
 # Application definition
 
 INSTALLED_APPS = [
-    'apps.kollabStorage',
+    'apps.kstorage',
     'apps.api',
     'rest_framework',
     'django.contrib.admin',

@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('kollabStorage', '0003_auto_20200501_1548'),
+        ('kstorage', '0003_auto_20200501_1548'),
     ]
 
     operations = [

@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.utils import timezone
-from apps.kollabStorage.models import User, Expertise, Project
+from apps.kstorage.models import User, Expertise, Project
 
 
 class UserTestCase(TestCase):

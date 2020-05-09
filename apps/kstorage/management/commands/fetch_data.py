@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
 
-from apps.kollabStorage.models import *
-from apps.kollabStorage import KollabApi
+from apps.kstorage.models import *
+from apps.kstorage.services import KollabApi
 
 
 class Command(BaseCommand):
