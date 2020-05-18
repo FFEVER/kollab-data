@@ -18,6 +18,9 @@ class Command(BaseCommand):
         User.objects.all().delete()
 
         for user in response:
+            for expertises in user['expertises']:
+                if len(expertises) < 3:
+                    expertises.extend([None] * (3 - len(expertises)))
             new_user, created = User.objects.update_or_create(id=user['id'], defaults=user)
             self.stdout.write(f'\t{new_user.__str__()}')
 
@@ -39,4 +42,4 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         self.fetch_users()
-        self.fetch_projects()
+        # self.fetch_projects()
