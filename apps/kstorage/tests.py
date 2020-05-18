@@ -6,14 +6,14 @@ from apps.kstorage.models import User, Project
 class UserTestCase(TestCase):
     def setUp(self):
         t = timezone.now().isoformat()
-        u = User.objects.create(id=1, email="eit@gmail.com", role="student", faculty=1, year="1",
+        u = User.objects.create(id=1, email="eit@gmail.com", role="student", faculty_id=1, year="1",
                                 expertises=[[1, 2, 3], [5, 6, None]], skills=["a", "b", "c"])
 
     def test_user_has_correct_attributes(self):
         """Users should have correct attributes"""
         u1 = User.objects.get(id=1)
         self.assertEqual("student", u1.role)
-        self.assertEqual(1, u1.faculty)
+        self.assertEqual(1, u1.faculty_id)
         self.assertEqual("1", u1.year)
         self.assertEqual([[1, 2, 3], [5, 6, None]], u1.expertises)
         self.assertEqual(["a", "b", "c"], u1.skills)

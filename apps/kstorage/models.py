@@ -6,7 +6,7 @@ class User(models.Model):
     id = models.PositiveIntegerField(primary_key=True)
     email = models.EmailField(default="default@kollab.default")
     role = models.CharField(max_length=50, null=True)
-    faculty = models.IntegerField(null=True)
+    faculty_id = models.IntegerField(null=True)
     expertises = ArrayField(ArrayField(models.IntegerField(blank=True, null=True)), default=list)
     skills = ArrayField(models.CharField(max_length=50, blank=True, null=True), default=list)
     year = models.CharField(max_length=20, null=True)
