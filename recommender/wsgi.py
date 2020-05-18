@@ -11,14 +11,15 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'recommender.settings')
-
-application = get_wsgi_application()
-
 # ML registry
 import inspect
 from apps.ml.registry import MLRegistry
 from apps.ml.income_classifier.random_forest import RandomForestClassifier
+
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'recommender.settings')
+
+application = get_wsgi_application()
+
 
 try:
     registry = MLRegistry()  # create ML registry
