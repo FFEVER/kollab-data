@@ -18,9 +18,7 @@ class Command(BaseCommand):
         User.objects.all().delete()
 
         for user in response:
-            for expertises in user['expertises']:
-                if len(expertises) < 3:
-                    expertises.extend([None] * (3 - len(expertises)))
+            self.__normalize_expertises(user['expertises'])
             new_user, created = User.objects.update_or_create(id=user['id'], defaults=user)
             self.stdout.write(f'\t{new_user.__str__()}')
 
@@ -34,12 +32,18 @@ class Command(BaseCommand):
         Project.objects.all().delete()
 
         for project in response:
+            self.__normalize_expertises(project['categories'])
             new_project, created = Project.objects.update_or_create(id=project['id'], defaults=project)
             self.stdout.write(f'\t{new_project.__str__()}')
 
         self.stdout.write(f'Total projects: {len(response)}')
         self.stdout.write(self.style.SUCCESS('Successfully updated projects'))
 
+    def __normalize_expertises(self, expertises_list):
+        for expertises in expertises_list:
+            if len(expertises) < 3:
+                expertises.extend([None] * (3 - len(expertises)))
+
     def handle(self, *args, **options):
         self.fetch_users()
-        # self.fetch_projects()
+        self.fetch_projects()
