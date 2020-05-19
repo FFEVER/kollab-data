@@ -42,7 +42,7 @@ class Command(BaseCommand):
     def __normalize_expertises(self, expertises_list):
         for expertises in expertises_list:
             if len(expertises) < 3:
-                expertises.extend([None] * (3 - len(expertises)))
+                expertises.extend([-1] * (3 - len(expertises)))
 
     def handle(self, *args, **options):
         self.fetch_users()
