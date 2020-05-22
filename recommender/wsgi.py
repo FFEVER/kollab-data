@@ -14,26 +14,25 @@ from django.core.wsgi import get_wsgi_application
 # ML registry
 import inspect
 from apps.ml.registry import MLRegistry
-from apps.ml.income_classifier.random_forest import RandomForestClassifier
+from apps.ml.project_recommender.user_project_fields_based import UserProjectFieldsBased
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'recommender.settings')
 
 application = get_wsgi_application()
 
-
 try:
     registry = MLRegistry()  # create ML registry
     # Random Forest classifier
-    rf = RandomForestClassifier()
+    upb = UserProjectFieldsBased()
     # add to ML registry
-    registry.add_algorithm(endpoint_name="income_classifier",
-                           algorithm_object=rf,
-                           algorithm_name="random forest",
-                           algorithm_status="production",
-                           algorithm_version="0.0.1",
-                           owner="Piotr",
-                           algorithm_description="Random Forest with simple pre- and post-processing",
-                           algorithm_code=inspect.getsource(RandomForestClassifier))
+    registry.add_algorithm(endpoint_name=UserProjectFieldsBased.endpoint_name,
+                           algorithm_object=upb,
+                           algorithm_name=UserProjectFieldsBased.algorithm_name,
+                           algorithm_status=UserProjectFieldsBased.status,
+                           algorithm_version=UserProjectFieldsBased.version,
+                           owner=UserProjectFieldsBased.owner,
+                           algorithm_description=UserProjectFieldsBased.description,
+                           algorithm_code=inspect.getsource(UserProjectFieldsBased))
 
 except Exception as e:
     print("Exception while loading the algorithms to the registry,", str(e))
