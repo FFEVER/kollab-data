@@ -1,10 +1,13 @@
 from django.test import TestCase
 from rest_framework.test import APIClient
+from django.core.management import call_command
+
 
 
 class EndpointTests(TestCase):
 
     def test_predict_view(self):
+        call_command("fetch_data")
         client = APIClient()
         input_data = {"user_id": 13}
         classifier_url = "/api/v1/project_recommender/predict"
