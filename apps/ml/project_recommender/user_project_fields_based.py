@@ -1,7 +1,8 @@
 import pandas as pd
 from recommender.settings import BASE_DIR
-from apps.kstorage.models import Project, User
-import joblib
+from apps.kstorage.models import User
+from apps.ml.models import UserProjectRelation
+import pickle
 
 
 class UserProjectFieldsBased:
@@ -14,23 +15,22 @@ class UserProjectFieldsBased:
 
     def __init__(self):
         self.path_to_artifacts = BASE_DIR + "/research/project_recommender/"
-        self.user_project_df = joblib.load(self.path_to_artifacts + "user_project_sim_table.joblib")
-
-    def reload_artifacts(self):
-        self.user_project_df = joblib.load(self.path_to_artifacts + "user_project_sim_table.joblib")
 
     def preprocessing(self, input_data):
+
         user_id = input_data['user_id']
         if User.objects.filter(id=user_id).exists():
             return user_id
         return -1
 
     def predict(self, input_data):
-        self.reload_artifacts()
+        latest_relation = UserProjectRelation.objects.last()
+        relation_df = pickle.loads(latest_relation.data_frame)
+
         if input_data == -1:
-            return self.user_project_df.sample(n=1)
+            return relation_df.sample(n=1)
         else:
-            return self.user_project_df.loc[[input_data]]
+            return relation_df.loc[[input_data]]
 
     def postprocessing(self, prediction):
         prediction = prediction.melt().sort_values('value', ascending=False)
