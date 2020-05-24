@@ -1,21 +1,14 @@
 from django.db import models
-
-
-class Expertise(models.Model):
-    id = models.PositiveIntegerField(primary_key=True)
-    name = models.CharField(max_length=300)
-    parent_id = models.PositiveIntegerField(null=True, blank=True)
-
-    def __str__(self):
-        return self.name
+from django.contrib.postgres.fields import ArrayField
 
 
 class User(models.Model):
     id = models.PositiveIntegerField(primary_key=True)
     email = models.EmailField(default="default@kollab.default")
     role = models.CharField(max_length=50, null=True)
-    faculty = models.CharField(max_length=150, null=True)
-    expertises = models.ManyToManyField(Expertise)
+    faculty_id = models.IntegerField(null=True)
+    expertises = ArrayField(ArrayField(models.IntegerField(blank=True, null=True)), default=list)
+    skills = ArrayField(models.CharField(max_length=50, blank=True, null=True), default=list)
     year = models.CharField(max_length=20, null=True)
 
     def __str__(self):
@@ -25,28 +18,11 @@ class User(models.Model):
 class Project(models.Model):
     id = models.PositiveIntegerField(primary_key=True)
     title = models.CharField(max_length=300)
-    short_desc = models.TextField(null=True)
-    long_desc = models.TextField(null=True, blank=True)
     project_status = models.SmallIntegerField(default=1, null=True)
-    expertises = models.ManyToManyField(Expertise)
+    categories = ArrayField(ArrayField(models.IntegerField(blank=True, null=True)), default=list)
+    tags = ArrayField(models.CharField(max_length=50, blank=True, null=True), default=list)
     created_at = models.DateTimeField()
     updated_at = models.DateTimeField()
 
     def __str__(self):
         return self.title
-
-
-class Skill(models.Model):
-    id = models.PositiveIntegerField(primary_key=True)
-    name = models.CharField(max_length=300)
-
-    def __str__(self):
-        return self.name
-
-
-class Tag(models.Model):
-    id = models.PositiveIntegerField(primary_key=True)
-    name = models.CharField(max_length=300)
-
-    def __str__(self):
-        return self.name

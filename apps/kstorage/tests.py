@@ -1,40 +1,34 @@
 from django.test import TestCase
 from django.utils import timezone
-from apps.kstorage.models import User, Expertise, Project
+from apps.kstorage.models import User, Project
 
 
 class UserTestCase(TestCase):
     def setUp(self):
         t = timezone.now().isoformat()
-        u = User.objects.create(id=1, email="eit@gmail.com", role="student", faculty="SE", year="1")
-        e1 = Expertise.objects.create(id=1, name="Mathematics")
-        e2 = Expertise.objects.create(id=2, name="Sciences")
-        u.expertises.add(e1)
-        u.expertises.add(e2)
+        u = User.objects.create(id=1, email="eit@gmail.com", role="student", faculty_id=1, year="1",
+                                expertises=[[1, 2, 3], [5, 6, None]], skills=["a", "b", "c"])
 
-    def test_user_has_many_expertises(self):
-        """Users should has many Expertise"""
+    def test_user_has_correct_attributes(self):
+        """Users should have correct attributes"""
         u1 = User.objects.get(id=1)
-        e1 = Expertise.objects.get(id=1)
-        e2 = Expertise.objects.get(id=1)
-        self.assertIn(e1, u1.expertises.all())
-        self.assertIn(e2, u1.expertises.all())
+        self.assertEqual("student", u1.role)
+        self.assertEqual(1, u1.faculty_id)
+        self.assertEqual("1", u1.year)
+        self.assertEqual([[1, 2, 3], [5, 6, None]], u1.expertises)
+        self.assertEqual(["a", "b", "c"], u1.skills)
 
 
 class ProjectTestCase(TestCase):
     def setUp(self):
         t = timezone.now().isoformat()
-        p = Project.objects.create(id=1, title="Title 1", short_desc="short desc",
-                                   long_desc="long desc", project_status=1, created_at=t, updated_at=t)
-        e1 = Expertise.objects.create(id=1, name="Mathematics")
-        e2 = Expertise.objects.create(id=2, name="Sciences")
-        p.expertises.add(e1)
-        p.expertises.add(e2)
+        p = Project.objects.create(id=1, title="Title 1", project_status=1, created_at=t, updated_at=t,
+                                   categories=[[1, 2, 3], [5, 6, None]], tags=["a", "b", "c"])
 
     def test_project_has_many_expertises(self):
-        """Projects should has many Expertise"""
+        """Projects should have correct attributes"""
         p1 = Project.objects.get(id=1)
-        e1 = Expertise.objects.get(id=1)
-        e2 = Expertise.objects.get(id=1)
-        self.assertIn(e1, p1.expertises.all())
-        self.assertIn(e2, p1.expertises.all())
+        self.assertEqual("Title 1", p1.title)
+        self.assertEqual(1, p1.project_status)
+        self.assertEqual([[1, 2, 3], [5, 6, None]], p1.categories)
+        self.assertEqual(["a", "b", "c"], p1.tags)
