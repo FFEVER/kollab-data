@@ -1,16 +1,27 @@
 from django.test import TestCase
+from django.core.management import call_command
 import inspect
 
 from apps.ml.project_recommender.user_project_fields_based import UserProjectFieldsBased
 from apps.ml.registry import MLRegistry
-
-from django.core.management import call_command
+from apps.kstorage.models import User, Project
+from apps.ml.services import ProjectRecommenderService
 
 
 class MLTests(TestCase):
 
+    @classmethod
+    def setUpTestData(cls):
+        super(MLTests, cls).setUpTestData()
+        User.objects.create(id=13, expertises=[[1, 2, 3], [4, 5, -1]], email="test@test.com", role="student",
+                                   faculty_id=1, skills=["skill1", "skill2"], year="1")
+        Project.objects.create(id=1, title="test", project_status=1, categories=[[1, 2, -1], [5, 6, -1]],
+                                         tags=["tag1", "tag2"], created_at="2020-03-22T10:19:12.782Z",
+                                         updated_at="2020-03-22T10:19:12.782Z")
+
+        ProjectRecommenderService.perform_precalculations()
+
     def test_user_project_fields_based(self):
-        call_command("fetch_data")
         input_data = {"user_id": 13}
         my_alg = UserProjectFieldsBased()
         response = my_alg.compute_prediction(input_data)
