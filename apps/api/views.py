@@ -86,17 +86,14 @@ class PredictView(views.APIView):
                 {"status": "Error", "message": "ML algorithm is not available"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
-        if len(algs) != 1 and algorithm_status != "ab_testing":
-            return Response(
-                {"status": "Error",
-                 "message": "ML algorithm selection is ambiguous. Please specify algorithm version."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-        alg_index = 0
+
         if algorithm_status == "ab_testing":
             alg_index = 0 if rand() < 0.5 else 1
+            target_algorithm = algs[alg_index]
+        else:
+            target_algorithm = algs.last()
 
-        algorithm_object = registry.endpoints[algs[alg_index].id]
+        algorithm_object = registry.endpoints[target_algorithm.id]
         prediction = algorithm_object.compute_prediction(request.data)
 
         label = prediction["label"] if "label" in prediction else "error"
@@ -105,7 +102,7 @@ class PredictView(views.APIView):
             full_response=prediction,
             response=label,
             feedback="",
-            parent_mlalgorithm=algs[alg_index],
+            parent_mlalgorithm=target_algorithm,
         )
         ml_request.save()
 
