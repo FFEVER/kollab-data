@@ -34,6 +34,7 @@ else:
 INSTALLED_APPS = [
     'apps.kstorage',
     'apps.api',
+    'apps.ml',
     'rest_framework',
     'django_extensions',
     'django.contrib.admin',
