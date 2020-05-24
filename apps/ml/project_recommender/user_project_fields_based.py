@@ -26,6 +26,7 @@ class UserProjectFieldsBased:
         return -1
 
     def predict(self, input_data):
+        self.reload_artifacts()
         if input_data == -1:
             return self.user_project_df.sample(n=1)
         else:
