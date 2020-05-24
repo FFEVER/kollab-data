@@ -6,11 +6,12 @@ from apps.ml.registry import MLRegistry
 
 from django.core.management import call_command
 
+
 class MLTests(TestCase):
 
     def test_user_project_fields_based(self):
         call_command("fetch_data")
-        input_data = { "user_id": 13 }
+        input_data = {"user_id": 13}
         my_alg = UserProjectFieldsBased()
         response = my_alg.compute_prediction(input_data)
         self.assertEqual('OK', response['status'])
