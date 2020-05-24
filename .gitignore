@@ -123,3 +123,6 @@ dmypy.json
 .pyre/
 
 # End of https://www.gitignore.io/api/django
+
+# Custom ignore research output files
+research/project_recommender/*.joblib
