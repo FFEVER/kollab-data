@@ -2,10 +2,9 @@ import itertools
 
 from scipy.spatial.distance import cosine
 import pandas as pd
-import joblib
+import pickle
 
 from apps.kstorage.models import User, Project
-from recommender.settings import BASE_DIR
 
 
 class FieldSimCalculator:
@@ -74,6 +73,11 @@ class UserProjectSimilarity:
     def get_sim_table(self):
         return self.user_project_df
 
-    def dump_sim_table(self, filename="user_project_sim_table.joblib"):
-        path = BASE_DIR + "/research/project_recommender/" + filename
-        joblib.dump(self.user_project_df, path)
+    def get_picked_sim_table(self):
+        return pickle.dumps(self.user_project_df)
+
+    def get_users_count(self):
+        return len(self.user_project_df)
+
+    def get_projects_count(self):
+        return len(self.user_project_df.columns)
