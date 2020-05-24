@@ -9,7 +9,7 @@ class KollabApi:
 
     def __init__(self):
         if os.getenv('KOLLAB_DATA_ENV') == 'production':
-            self.kollab_domain = 'https://kollab-project.herokuapp.com'
+            self.kollab_domain = 'https://kollabproject.herokuapp.com'
         else:
             self.kollab_domain = 'http://localhost:5000'
         self.kollab_headers = {'Authorization': f'Bearer {os.getenv("KOLLAB_API_KEY")}',
