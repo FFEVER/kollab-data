@@ -13,11 +13,11 @@ class MLTests(TestCase):
     @classmethod
     def setUpTestData(cls):
         super(MLTests, cls).setUpTestData()
-        User.objects.create(id=13, expertises=[[1, 2, 3], [4, 5, -1]], email="test@test.com", role="student",
-                                   faculty_id=1, skills=["skill1", "skill2"], year="1")
-        Project.objects.create(id=1, title="test", project_status=1, categories=[[1, 2, -1], [5, 6, -1]],
-                                         tags=["tag1", "tag2"], created_at="2020-03-22T10:19:12.782Z",
-                                         updated_at="2020-03-22T10:19:12.782Z")
+        User.objects.create(id=13, fields=[[1, 2, 3], [4, 5, -1]], email="test@test.com", role="student",
+                            faculty_id=1, skills=["skill1", "skill2"], year="1")
+        Project.objects.create(id=1, title="test", project_status=1, fields=[[1, 2, -1], [5, 6, -1]],
+                               tags=["tag1", "tag2"], created_at="2020-03-22T10:19:12.782Z",
+                               updated_at="2020-03-22T10:19:12.782Z")
 
         ProjectRecommenderService.perform_precalculations()
 
@@ -28,6 +28,7 @@ class MLTests(TestCase):
         self.assertEqual('OK', response['status'])
         self.assertTrue('label' in response)
         self.assertTrue('projects' in response)
+        self.assertEqual(UserProjectFieldsBased.algorithm_name, response['alg_name'])
 
     def test_registry(self):
         registry = MLRegistry()
