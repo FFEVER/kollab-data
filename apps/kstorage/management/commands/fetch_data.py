@@ -19,7 +19,7 @@ class Command(BaseCommand):
         User.objects.all().delete()
 
         for user in response:
-            self.__normalize_expertises(user['expertises'])
+            self.__normalize_fields(user['fields'])
             new_user, created = User.objects.update_or_create(id=user['id'], defaults=user)
             self.stdout.write(f'\t{new_user.__str__()}')
 
@@ -33,14 +33,14 @@ class Command(BaseCommand):
         Project.objects.all().delete()
 
         for project in response:
-            self.__normalize_expertises(project['categories'])
+            self.__normalize_fields(project['fields'])
             new_project, created = Project.objects.update_or_create(id=project['id'], defaults=project)
             self.stdout.write(f'\t{new_project.__str__()}')
 
         self.stdout.write(f'Total projects: {len(response)}')
         self.stdout.write(self.style.SUCCESS('Successfully updated projects\n'))
 
-    def __normalize_expertises(self, expertises_list):
+    def __normalize_fields(self, expertises_list):
         for expertises in expertises_list:
             if len(expertises) < 3:
                 expertises.extend([-1] * (3 - len(expertises)))
