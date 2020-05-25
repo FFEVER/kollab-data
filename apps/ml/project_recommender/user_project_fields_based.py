@@ -1,8 +1,7 @@
-import pandas as pd
-from recommender.settings import BASE_DIR
+import pickle
+
 from apps.kstorage.models import User
 from apps.ml.models import UserProjectRelation
-import pickle
 
 
 class UserProjectFieldsBased:
@@ -10,21 +9,17 @@ class UserProjectFieldsBased:
     algorithm_name = "User's and project's fields based"
     owner = "Nattaphol"
     description = "Predict projects based on user and project fields"
-    version = "0.0.1"
+    version = "0.0.2"
     status = "production"
 
-    def __init__(self):
-        self.path_to_artifacts = BASE_DIR + "/research/project_recommender/"
-
     def preprocessing(self, input_data):
-
         user_id = input_data['user_id']
         if User.objects.filter(id=user_id).exists():
             return user_id
         return -1
 
     def predict(self, input_data):
-        latest_relation = UserProjectRelation.objects.last()
+        latest_relation = UserProjectRelation.objects.filter(alg_type=UserProjectFieldsBased.__name__).last()
         relation_df = pickle.loads(latest_relation.data_frame)
 
         if input_data == -1:
@@ -35,7 +30,8 @@ class UserProjectFieldsBased:
     def postprocessing(self, prediction):
         prediction = prediction.melt().sort_values('value', ascending=False)
         top_100_projects = prediction.head(100)['variable'].to_list()
-        return {"projects": top_100_projects, "label": "top_related_projects", "status": "OK"}
+        return {"projects": top_100_projects, "label": "top_related_projects", "status": "OK",
+                "alg_name": UserProjectFieldsBased.algorithm_name}
 
     def compute_prediction(self, input_data):
         try:
