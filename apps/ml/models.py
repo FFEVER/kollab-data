@@ -15,4 +15,5 @@ class UserProjectRelation(models.Model):
     users_count = models.IntegerField()
     projects_count = models.IntegerField()
     data_frame = models.BinaryField()
+    alg_type = models.CharField(max_length=50, default="UserProjectFieldsBased")
     created_at = models.DateTimeField(auto_now_add=True, blank=True)
