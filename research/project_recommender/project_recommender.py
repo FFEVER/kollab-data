@@ -3,7 +3,7 @@ import pickle
 from abc import ABC, abstractmethod
 
 from apps.kstorage.models import User, Project
-from research.project_recommender.field_sim_calculator import FieldSimCalculator
+from research.project_recommender.relation_calculator import RelationCalcByFields, RelationCalcByInteractions
 
 
 class Relationship(ABC):
@@ -11,8 +11,9 @@ class Relationship(ABC):
         Based class for relationships
     '''
 
-    def __init__(self, index, columns):
+    def __init__(self, index, columns, calculator):
         self.relations_df = pd.DataFrame(index=index, columns=columns)
+        self.calculator = calculator
 
     @abstractmethod
     def fill_relations(self):
@@ -37,18 +38,16 @@ class UserProjectRelationship(Relationship):
     '''
 
     def __init__(self, index=User.objects.values_list('id', flat=True),
-                 columns=Project.objects.values_list('id', flat=True)):
-        super().__init__(index, columns)
+                 columns=Project.objects.values_list('id', flat=True),
+                 calculator=RelationCalcByFields):
+        super().__init__(index, columns, calculator)
         self.users = User.objects.all()
         self.projects = Project.objects.all()
-        self.sim_calc = FieldSimCalculator()
 
     def fill_relations(self):
         for user in self.users:
             for project in self.projects:
-                u_fields = user.expertises
-                p_fields = project.categories
-                sim = self.sim_calc.calc_sim_by_fields(u_fields, p_fields)
+                sim = self.calculator.calc_relation(user, project)
                 self.relations_df.loc[user.id, project.id] = sim
         return self.relations_df
 
@@ -59,16 +58,15 @@ class ProjectRelationship(Relationship):
     '''
 
     def __init__(self, index=Project.objects.values_list('id', flat=True),
-                 columns=Project.objects.values_list('id', flat=True)):
-        super().__init__(index, columns)
+                 columns=Project.objects.values_list('id', flat=True),
+                 calculator=RelationCalcByFields):
+        super().__init__(index, columns, calculator)
         self.projects = Project.objects.all()
-        self.sim_calc = FieldSimCalculator()
+        self.sim_calc = RelationCalcByFields()
 
     def fill_relations(self):
         for project_row in self.projects:
             for project_col in self.projects:
-                row_fields = project_row.categories
-                col_fields = project_col.categories
-                sim = self.sim_calc.calc_sim_by_fields(row_fields, col_fields)
+                sim = self.calculator.calc_relation(project_row, project_col)
                 self.relations_df.loc[project_row.id, project_col.id] = sim
         return self.relations_df
