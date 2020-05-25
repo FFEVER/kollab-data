@@ -13,7 +13,7 @@ class RelationCalculator(ABC):
 class RelationCalcByFields(RelationCalculator):
     @classmethod
     def calc_relation(cls, obj_a, obj_b):
-        cls.calc_sim_by_fields(obj_a.fields, obj_b.fields)
+        return cls.calc_sim_by_fields(obj_a.fields, obj_b.fields)
 
     @staticmethod
     def field_similarity(f1, f2):
