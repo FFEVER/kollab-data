@@ -1,4 +1,4 @@
-from research.project_recommender.project_recommender import UserProjectRelationship
+from research.project_recommender.relationship import UserProjectRelationship
 from apps.ml.models import UserProjectRelation
 from apps.ml.project_recommender.user_project_fields_based import UserProjectFieldsBased
 
