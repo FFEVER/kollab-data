@@ -11,9 +11,9 @@ class Relationship(ABC):
         Based class for relationships
     '''
 
-    def __init__(self, index, columns, calculator):
+    def __init__(self, index, columns, calculator_class):
         self.relations_df = pd.DataFrame(index=index, columns=columns)
-        self.calculator = calculator
+        self.calculator = calculator_class()
 
     @abstractmethod
     def fill_relations(self):
@@ -40,7 +40,8 @@ class Relationship(ABC):
         pass
 
     def alg_type(self):
-        return self.calculator.__name__
+        return type(self.calculator).__name__
+
 
 class UserProjectRelationship(Relationship):
     '''
@@ -49,8 +50,8 @@ class UserProjectRelationship(Relationship):
 
     def __init__(self, index=User.objects.values_list('id', flat=True),
                  columns=Project.objects.values_list('id', flat=True),
-                 calculator=RelationCalcByFields):
-        super().__init__(index, columns, calculator)
+                 calculator_class=RelationCalcByFields):
+        super().__init__(index, columns, calculator_class)
         self.users = User.objects.all()
         self.projects = Project.objects.all()
 
@@ -75,10 +76,9 @@ class ProjectRelationship(Relationship):
 
     def __init__(self, index=Project.objects.values_list('id', flat=True),
                  columns=Project.objects.values_list('id', flat=True),
-                 calculator=RelationCalcByFields):
-        super().__init__(index, columns, calculator)
+                 calculator_class=RelationCalcByFields):
+        super().__init__(index, columns, calculator_class)
         self.projects = Project.objects.all()
-        self.sim_calc = RelationCalcByFields()
 
     def fill_relations(self):
         for project_row in self.projects:
