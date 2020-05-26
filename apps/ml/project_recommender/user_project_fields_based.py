@@ -16,6 +16,7 @@ class UserProjectFieldsBased:
 
     @classmethod
     def pre_calculate(cls):
+        print(f'{UserProjectFieldsBased.__name__}: Create user and project relation by fields.')
         user_project_by_fields = UserProjectRelationship()
         user_project_by_fields.fill_relations()
         Relation.objects.create(row_count=user_project_by_fields.row_count(),

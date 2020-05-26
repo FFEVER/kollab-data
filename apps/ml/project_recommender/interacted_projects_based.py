@@ -12,12 +12,14 @@ class InteractedProjectsBased:
     owner = "Nattaphol"
     description = "Recommend projects based on projects that a user interacts with in the past"
     version = "0.0.1"
-    status = "development"
+    status = "production"
 
     @classmethod
     def pre_calculate(cls):
-        cls.create_user_project_relation_by_interactions()
+        print(f'{InteractedProjectsBased.__name__}: Create project relation by fields.')
         cls.create_project_relation_by_fields()
+        print(f'{InteractedProjectsBased.__name__}: Create user and project relation by interactions.')
+        cls.create_user_project_relation_by_interactions()
 
     @staticmethod
     def create_project_relation_by_fields():

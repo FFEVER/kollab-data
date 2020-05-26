@@ -37,13 +37,13 @@ try:
 
     ipb = InteractedProjectsBased()
     registry.add_algorithm(endpoint_name=ipb.endpoint_name,
-                           algorithm_object=upb,
+                           algorithm_object=ipb,
                            algorithm_name=ipb.algorithm_name,
                            algorithm_status=ipb.status,
                            algorithm_version=ipb.version,
                            owner=ipb.owner,
                            algorithm_description=ipb.description,
-                           algorithm_code=inspect.getsource(UserProjectFieldsBased))
+                           algorithm_code=inspect.getsource(InteractedProjectsBased))
 
 except Exception as e:
     print("Exception while loading the algorithms to the registry,", str(e))
