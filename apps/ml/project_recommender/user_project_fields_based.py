@@ -3,6 +3,7 @@ import pickle
 from apps.kstorage.models import User, Project
 from apps.ml.models import Relation
 from research.project_recommender.relation_calculator import RelationCalcByFields
+from research.project_recommender.relationship import UserProjectRelationship
 
 
 class UserProjectFieldsBased:
@@ -12,6 +13,17 @@ class UserProjectFieldsBased:
     description = "Predict projects based on user and project fields"
     version = "0.0.2"
     status = "production"
+
+    @classmethod
+    def pre_calculate(cls):
+        user_project_by_fields = UserProjectRelationship()
+        user_project_by_fields.fill_relations()
+        Relation.objects.create(row_count=user_project_by_fields.row_count(),
+                                col_count=user_project_by_fields.col_count(),
+                                row_type=user_project_by_fields.row_type(),
+                                col_type=user_project_by_fields.col_type(),
+                                data_frame=user_project_by_fields.get_picked_relations(),
+                                alg_type=user_project_by_fields.alg_type())
 
     def preprocessing(self, input_data):
         user_id = input_data['user_id']
