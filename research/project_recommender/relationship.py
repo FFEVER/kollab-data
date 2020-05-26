@@ -31,6 +31,16 @@ class Relationship(ABC):
     def col_count(self):
         return len(self.relations_df.columns)
 
+    @abstractmethod
+    def row_type(self):
+        pass
+
+    @abstractmethod
+    def col_type(self):
+        pass
+
+    def alg_type(self):
+        return self.calculator.__name__
 
 class UserProjectRelationship(Relationship):
     '''
@@ -51,6 +61,12 @@ class UserProjectRelationship(Relationship):
                 self.relations_df.loc[user.id, project.id] = sim
         return self.relations_df
 
+    def row_type(self):
+        return User.__name__
+
+    def col_type(self):
+        return Project.__name__
+
 
 class ProjectRelationship(Relationship):
     '''
@@ -70,3 +86,9 @@ class ProjectRelationship(Relationship):
                 sim = self.calculator.calc_relation(project_row, project_col)
                 self.relations_df.loc[project_row.id, project_col.id] = sim
         return self.relations_df
+
+    def row_type(self):
+        return Project.__name__
+
+    def col_type(self):
+        return Project.__name__

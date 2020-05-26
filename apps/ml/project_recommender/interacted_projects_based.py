@@ -1,5 +1,5 @@
 from apps.kstorage.models import User
-from apps.ml.models import UserProjectRelation
+from apps.ml.models import Relation
 import pickle
 
 
@@ -18,7 +18,7 @@ class InteractedProjectsBased:
         return -1
 
     def predict(self, input_data):
-        latest_relation = UserProjectRelation.objects.last()
+        latest_relation = Relation.objects.last()
         relation_df = pickle.loads(latest_relation.data_frame)
 
         if input_data == -1:

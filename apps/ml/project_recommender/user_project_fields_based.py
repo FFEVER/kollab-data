@@ -1,7 +1,8 @@
 import pickle
 
-from apps.kstorage.models import User
-from apps.ml.models import UserProjectRelation
+from apps.kstorage.models import User, Project
+from apps.ml.models import Relation
+from research.project_recommender.relation_calculator import RelationCalcByFields
 
 
 class UserProjectFieldsBased:
@@ -19,7 +20,8 @@ class UserProjectFieldsBased:
         return -1
 
     def predict(self, input_data):
-        latest_relation = UserProjectRelation.objects.filter(alg_type=UserProjectFieldsBased.__name__).last()
+        latest_relation = Relation.objects.filter(row_type=User.__name__, col_type=Project.__name__,
+                                                  alg_type=RelationCalcByFields.__name__).last()
         relation_df = pickle.loads(latest_relation.data_frame)
 
         if input_data == -1:
