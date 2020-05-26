@@ -80,16 +80,12 @@ class RelationCalcByInteractions(RelationCalculator):
                 return 0
 
             sim_list = []
-            print("member")
             m_sim = self.calc_by_weighted_values(project, user.joined_projects, self.MEMBER_WEIGHT, self.MAX_MEMBERS)
             sim_list.append(m_sim)
-            print("\nstar")
             s_sim = self.calc_by_weighted_values(project, user.starred_projects, self.STAR_WEIGHT, self.MAX_STARS)
             sim_list.append(s_sim)
-            print("\nfollow")
             f_sim = self.calc_by_weighted_values(project, user.followed_projects, self.FOLLOW_WEIGHT, self.MAX_FOLLOWS)
             sim_list.append(f_sim)
-            print("\nview")
             v_sim = self.calc_by_weighted_values(project, user.viewed_projects, self.VIEW_WEIGHT, self.MAX_VIEWS)
             sim_list.append(v_sim)
 
@@ -126,10 +122,6 @@ class RelationCalcByInteractions(RelationCalculator):
             current_weight = self.__normalize_weight(max_weight, max_n_projects, count)
 
         weighted_avg = np.average(sim_list, weights=weight_list)
-
-        print("sim_list", sim_list)
-        print("weight_list", weight_list)
-        print("weighted_avg", weighted_avg)
 
         return weighted_avg
 
