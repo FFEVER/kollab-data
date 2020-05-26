@@ -1,6 +1,4 @@
 from django.db import models
-from research.project_recommender.relation_calculator import RelationCalcByFields
-
 
 class Relation(models.Model):
     '''
@@ -21,5 +19,5 @@ class Relation(models.Model):
     row_type = models.CharField(max_length=50, default="User")
     col_type = models.CharField(max_length=50, default="Project")
     data_frame = models.BinaryField()
-    alg_type = models.CharField(max_length=50, default=RelationCalcByFields.__name__)
+    alg_type = models.CharField(max_length=50, default="RelationCalcByFields")
     created_at = models.DateTimeField(auto_now_add=True, blank=True)
