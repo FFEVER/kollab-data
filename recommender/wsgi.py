@@ -19,20 +19,31 @@ application = get_wsgi_application()
 import inspect
 from apps.ml.registry import MLRegistry
 from apps.ml.project_recommender.user_project_fields_based import UserProjectFieldsBased
+from apps.ml.project_recommender.interacted_projects_based import InteractedProjectsBased
 
 try:
     registry = MLRegistry()  # create ML registry
     # Random Forest classifier
     upb = UserProjectFieldsBased()
     # add to ML registry
-    registry.add_algorithm(endpoint_name=UserProjectFieldsBased.endpoint_name,
+    registry.add_algorithm(endpoint_name=upb.endpoint_name,
                            algorithm_object=upb,
-                           algorithm_name=UserProjectFieldsBased.algorithm_name,
-                           algorithm_status=UserProjectFieldsBased.status,
-                           algorithm_version=UserProjectFieldsBased.version,
-                           owner=UserProjectFieldsBased.owner,
-                           algorithm_description=UserProjectFieldsBased.description,
+                           algorithm_name=upb.algorithm_name,
+                           algorithm_status=upb.status,
+                           algorithm_version=upb.version,
+                           owner=upb.owner,
+                           algorithm_description=upb.description,
                            algorithm_code=inspect.getsource(UserProjectFieldsBased))
+
+    ipb = InteractedProjectsBased()
+    registry.add_algorithm(endpoint_name=ipb.endpoint_name,
+                           algorithm_object=ipb,
+                           algorithm_name=ipb.algorithm_name,
+                           algorithm_status=ipb.status,
+                           algorithm_version=ipb.version,
+                           owner=ipb.owner,
+                           algorithm_description=ipb.description,
+                           algorithm_code=inspect.getsource(InteractedProjectsBased))
 
 except Exception as e:
     print("Exception while loading the algorithms to the registry,", str(e))

@@ -1,7 +1,9 @@
 import pickle
 
-from apps.kstorage.models import User
-from apps.ml.models import UserProjectRelation
+from apps.kstorage.models import User, Project
+from apps.ml.models import Relation
+from research.project_recommender.relation_calculator import RelationCalcByFields
+from research.project_recommender.relationship import UserProjectRelationship
 
 
 class UserProjectFieldsBased:
@@ -12,6 +14,18 @@ class UserProjectFieldsBased:
     version = "0.0.2"
     status = "production"
 
+    @classmethod
+    def pre_calculate(cls):
+        print(f'{UserProjectFieldsBased.__name__}: Create user and project relation by fields.')
+        user_project_by_fields = UserProjectRelationship()
+        user_project_by_fields.fill_relations()
+        Relation.objects.create(row_count=user_project_by_fields.row_count(),
+                                col_count=user_project_by_fields.col_count(),
+                                row_type=user_project_by_fields.row_type(),
+                                col_type=user_project_by_fields.col_type(),
+                                data_frame=user_project_by_fields.get_picked_relations(),
+                                alg_type=user_project_by_fields.alg_type())
+
     def preprocessing(self, input_data):
         user_id = input_data['user_id']
         if User.objects.filter(id=user_id).exists():
@@ -19,7 +33,8 @@ class UserProjectFieldsBased:
         return -1
 
     def predict(self, input_data):
-        latest_relation = UserProjectRelation.objects.filter(alg_type=UserProjectFieldsBased.__name__).last()
+        latest_relation = Relation.objects.filter(row_type=User.__name__, col_type=Project.__name__,
+                                                  alg_type=RelationCalcByFields.__name__).last()
         relation_df = pickle.loads(latest_relation.data_frame)
 
         if input_data == -1:
