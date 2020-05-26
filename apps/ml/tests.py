@@ -1,8 +1,8 @@
 from django.test import TestCase
-from django.core.management import call_command
 import inspect
 
 from apps.ml.project_recommender.user_project_fields_based import UserProjectFieldsBased
+from apps.ml.project_recommender.interacted_projects_based import InteractedProjectsBased
 from apps.ml.registry import MLRegistry
 from apps.kstorage.models import User, Project
 from apps.ml.services import ProjectRecommenderService
@@ -29,6 +29,15 @@ class MLTests(TestCase):
         self.assertTrue('label' in response)
         self.assertTrue('projects' in response)
         self.assertEqual(UserProjectFieldsBased.algorithm_name, response['alg_name'])
+
+    def test_interacted_projects_based(self):
+        input_data = {"user_id": 13}
+        my_alg = InteractedProjectsBased()
+        response = my_alg.compute_prediction(input_data)
+        self.assertEqual('OK', response['status'])
+        self.assertTrue('label' in response)
+        self.assertTrue('projects' in response)
+        self.assertEqual(InteractedProjectsBased.algorithm_name, response['alg_name'])
 
     def test_registry(self):
         registry = MLRegistry()
