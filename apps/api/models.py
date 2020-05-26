@@ -14,6 +14,9 @@ class Endpoint(models.Model):
     owner = models.CharField(max_length=128)
     created_at = models.DateTimeField(auto_now_add=True, blank=True)
 
+    def __str__(self):
+        return self.name
+
 
 class MLAlgorithm(models.Model):
     '''
@@ -36,6 +39,9 @@ class MLAlgorithm(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, blank=True)
     parent_endpoint = models.ForeignKey(Endpoint, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.name
+
 
 class MLAlgorithmStatus(models.Model):
     '''
@@ -54,6 +60,9 @@ class MLAlgorithmStatus(models.Model):
     created_by = models.CharField(max_length=128)
     created_at = models.DateTimeField(auto_now_add=True, blank=True)
     parent_mlalgorithm = models.ForeignKey(MLAlgorithm, on_delete=models.CASCADE, related_name="status")
+
+    def __str__(self):
+        return self.status
 
 
 class MLRequest(models.Model):
@@ -74,3 +83,6 @@ class MLRequest(models.Model):
     feedback = models.CharField(max_length=10000, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True, blank=True)
     parent_mlalgorithm = models.ForeignKey(MLAlgorithm, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return str(self.parent_mlalgorithm)

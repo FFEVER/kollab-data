@@ -21,3 +21,6 @@ class Relation(models.Model):
     data_frame = models.BinaryField()
     alg_type = models.CharField(max_length=50, default="RelationCalcByFields")
     created_at = models.DateTimeField(auto_now_add=True, blank=True)
+
+    def __str__(self):
+        return self.alg_type
