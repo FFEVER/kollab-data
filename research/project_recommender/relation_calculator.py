@@ -136,7 +136,7 @@ class RelationCalcByInteractions(RelationCalculator):
 #     def __init__(self):
 #         self.project_df = pickle.loads(
 #             Relation.objects.filter(row_type=Project.__name__, col_type=Project.__name__).last().data_frame)
-# 
+#
 #     def calc_relation(self, project, user):
 #         pass
 #         # p_id = project.id

@@ -2,16 +2,17 @@ import pickle
 
 from apps.kstorage.models import User, Project
 from apps.ml.models import Relation
+from apps.ml.recommender import Recommender
 from research.project_recommender.relation_calculator import RelationCalcByFields
 from research.project_recommender.relationship import UserProjectRelationship
 
 
-class UserProjectFieldsBased:
+class UserProjectFieldsBased(Recommender):
     endpoint_name = "project_recommender"
     algorithm_name = "User's and project's fields based"
     owner = "Nattaphol"
     description = "Predict projects based on user and project fields"
-    version = "0.0.2"
+    version = "0.0.3"
     status = "production"
 
     @classmethod

@@ -2,16 +2,17 @@ from apps.kstorage.models import User, Project
 from apps.ml.models import Relation
 import pickle
 
+from apps.ml.recommender import Recommender
 from research.project_recommender.relation_calculator import RelationCalcByInteractions
 from research.project_recommender.relationship import UserProjectRelationship, ProjectRelationship
 
 
-class InteractedProjectsBased:
+class InteractedProjectsBased(Recommender):
     endpoint_name = "project_recommender"
     algorithm_name = "Interacted Projects Based"
     owner = "Nattaphol"
     description = "Recommend projects based on projects that a user interacts with in the past"
-    version = "0.0.1"
+    version = "0.0.2"
     status = "production"
 
     @classmethod
