@@ -1,27 +1,27 @@
 import pickle
 import traceback
 
-from apps.kstorage.models import User, Project
+from apps.kstorage.models import Project, User
 from apps.ml.models import Relation
 
 from apps.ml.recommender import Recommender
 from research.project_recommender.relation_calculator import RelationCalcByFields
-from research.project_recommender.relationship import ProjectRelationship
+from research.project_recommender.relationship import ProjectUserRelationship
 
 
-class ProjectFieldsBased(Recommender):
-    endpoint_name = "related_project"
-    algorithm_name = "Related Projects by Fields"
+class UserToProjectFieldsBased(Recommender):
+    endpoint_name = "user_recommender"
+    algorithm_name = "User to Project Fields Based"
     owner = "Nattaphol"
-    description = "Recommend a related projects of a given project using its fields"
+    description = "Recommend users to a project to be invited by an owner"
     version = "0.0.1"
     status = "production"
 
     @classmethod
     def pre_calculate(cls):
-        print(f'{ProjectFieldsBased.__name__}: Create project and project relation by fields.')
-        # Relation table for project/project
-        project_by_fields = ProjectRelationship()
+        print(f'{UserToProjectFieldsBased.__name__}: Create project and user relation by fields.')
+        # Relation table for project/user
+        project_by_fields = ProjectUserRelationship()
         project_by_fields.fill_relations()
         Relation.objects.get_or_create(row_count=project_by_fields.row_count(),
                                        col_count=project_by_fields.col_count(),
@@ -37,7 +37,7 @@ class ProjectFieldsBased(Recommender):
         return -1
 
     def predict(self, input_data):
-        latest_relation = Relation.objects.filter(row_type=Project.__name__, col_type=Project.__name__,
+        latest_relation = Relation.objects.filter(row_type=Project.__name__, col_type=User.__name__,
                                                   alg_type=RelationCalcByFields.__name__).last()
         relation_df = pickle.loads(latest_relation.data_frame)
 
@@ -48,9 +48,9 @@ class ProjectFieldsBased(Recommender):
 
     def postprocessing(self, prediction):
         prediction = prediction.melt().sort_values('value', ascending=False)
-        top_100_projects = prediction.head(100)['variable'].to_list()
-        return {"projects": top_100_projects, "label": "related_projects", "status": "OK",
-                "alg_name": ProjectFieldsBased.algorithm_name}
+        recommended_users = prediction.head(100)['variable'].to_list()
+        return {"users": recommended_users, "label": "Recommended users", "status": "OK",
+                "alg_name": UserToProjectFieldsBased.algorithm_name}
 
     def compute_prediction(self, input_data):
         try:

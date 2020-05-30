@@ -22,7 +22,7 @@ class Relationship(ABC):
     def get_relations(self):
         return self.relations_df
 
-    def get_picked_relations(self):
+    def get_pickled_relations(self):
         return pickle.dumps(self.relations_df)
 
     def row_count(self):
@@ -69,9 +69,35 @@ class UserProjectRelationship(Relationship):
         return Project.__name__
 
 
+class ProjectUserRelationship(Relationship):
+    '''
+        Handle relations for projects and users
+    '''
+
+    def __init__(self, index=Project.objects.values_list('id', flat=True),
+                 columns=User.objects.values_list('id', flat=True),
+                 calculator_class=RelationCalcByFields):
+        super().__init__(index, columns, calculator_class)
+        self.users = User.objects.all()
+        self.projects = Project.objects.all()
+
+    def fill_relations(self):
+        for project in self.projects:
+            for user in self.users:
+                sim = self.calculator.calc_relation(project, user)
+                self.relations_df.loc[project.id, user.id] = sim
+        return self.relations_df
+
+    def row_type(self):
+        return Project.__name__
+
+    def col_type(self):
+        return User.__name__
+
+
 class ProjectRelationship(Relationship):
     '''
-        Handle relations for users and projects
+        Handle relations for projects and projects
     '''
 
     def __init__(self, index=Project.objects.values_list('id', flat=True),
