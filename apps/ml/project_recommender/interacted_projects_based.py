@@ -12,7 +12,7 @@ class InteractedProjectsBased(Recommender):
     algorithm_name = "Interacted Projects Based"
     owner = "Nattaphol"
     description = "Recommend projects based on projects that a user interacts with in the past"
-    version = "0.0.3"
+    version = "0.0.4"
     status = "production"
 
     @classmethod
@@ -39,7 +39,7 @@ class InteractedProjectsBased(Recommender):
         # Relation table for past interactions based
         user_project_interactions = UserProjectRelationship(calculator_class=RelationCalcByInteractions)
         user_project_interactions.fill_relations()
-        Relation.objects.create(row_count=user_project_interactions.row_count(),
+        Relation.objects.get_or_create(row_count=user_project_interactions.row_count(),
                                 col_count=user_project_interactions.col_count(),
                                 row_type=user_project_interactions.row_type(),
                                 col_type=user_project_interactions.col_type(),
@@ -65,7 +65,7 @@ class InteractedProjectsBased(Recommender):
     def postprocessing(self, prediction):
         prediction = prediction.melt().sort_values('value', ascending=False)
         top_100_projects = prediction.head(100)['variable'].to_list()
-        return {"projects": top_100_projects, "label": "top_related_projects", "status": "OK",
+        return {"projects": top_100_projects, "label": "Recommended projects", "status": "OK",
                 "alg_name": InteractedProjectsBased.algorithm_name}
 
     def compute_prediction(self, input_data):
