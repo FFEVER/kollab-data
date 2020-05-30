@@ -59,7 +59,7 @@ class RecAlgorithmStatus(models.Model):
     active = models.BooleanField()
     created_by = models.CharField(max_length=128)
     created_at = models.DateTimeField(auto_now_add=True, blank=True)
-    parent_mlalgorithm = models.ForeignKey(RecAlgorithm, on_delete=models.CASCADE, related_name="status")
+    parent_algorithm = models.ForeignKey(RecAlgorithm, on_delete=models.CASCADE, related_name="status")
 
     def __str__(self):
         return self.status
@@ -82,7 +82,7 @@ class RecRequest(models.Model):
     response = models.CharField(max_length=10000)
     feedback = models.CharField(max_length=10000, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True, blank=True)
-    parent_mlalgorithm = models.ForeignKey(RecAlgorithm, on_delete=models.CASCADE)
+    parent_algorithm = models.ForeignKey(RecAlgorithm, on_delete=models.CASCADE)
 
     def __str__(self):
-        return str(self.parent_mlalgorithm)
+        return str(self.parent_algorithm)

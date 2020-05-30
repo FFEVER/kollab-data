@@ -36,7 +36,7 @@ class MLAlgorithmViewSet(
 
 
 def deactivate_other_statuses(instance):
-    old_statuses = RecAlgorithmStatus.objects.filter(parent_mlalgorithm=instance.parent_mlalgorithm,
+    old_statuses = RecAlgorithmStatus.objects.filter(parent_mlalgorithm=instance.parent_algorithm,
                                                      created_at__lt=instance.created_at,
                                                      active=True)
     for i in range(len(old_statuses)):
