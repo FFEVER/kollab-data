@@ -3,7 +3,7 @@ import traceback
 from apps.kstorage.models import User
 
 from apps.ml.project_recommender.interacted_projects_based import InteractedProjectsBased
-from apps.ml.project_recommender.user_project_fields_based import UserProjectFieldsBased
+from apps.ml.project_recommender.user_project_fields_based import ProjectToUserFieldsBased
 from apps.ml.recommender import Recommender
 
 
@@ -13,13 +13,13 @@ class FieldsOrInteractedBased(Recommender):
     owner = "Nattaphol"
     description = "Recommend projects based on projects that a user interacts with in the past " \
                   "or based on their fields depending on the user's interactions in the past."
-    version = "0.0.1"
+    version = "0.0.2"
     status = "production"
 
     @classmethod
     def pre_calculate(cls):
         print(f'{FieldsOrInteractedBased.__name__}: Create user and project relation by fields.')
-        UserProjectFieldsBased.pre_calculate()
+        ProjectToUserFieldsBased.pre_calculate()
         InteractedProjectsBased.pre_calculate()
 
     def preprocessing(self, input_data):
@@ -32,13 +32,13 @@ class FieldsOrInteractedBased(Recommender):
 
     def predict(self, input_data):
         if input_data['user_id'] == -1:
-            return UserProjectFieldsBased().compute_prediction(input_data)
+            return ProjectToUserFieldsBased().compute_prediction(input_data)
 
         user = User.objects.filter(id=input_data['user_id']).last()
         if self.have_enough_history(user):
             return InteractedProjectsBased().compute_prediction(input_data)
         else:
-            return UserProjectFieldsBased().compute_prediction(input_data)
+            return ProjectToUserFieldsBased().compute_prediction(input_data)
 
     def postprocessing(self, prediction):
         return prediction

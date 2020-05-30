@@ -7,17 +7,17 @@ from research.project_recommender.relation_calculator import RelationCalcByField
 from research.project_recommender.relationship import UserProjectRelationship
 
 
-class UserProjectFieldsBased(Recommender):
+class ProjectToUserFieldsBased(Recommender):
     endpoint_name = "project_recommender"
-    algorithm_name = "User's and project's fields based"
+    algorithm_name = "Project to User Fields Based"
     owner = "Nattaphol"
     description = "Predict projects based on user and project fields"
-    version = "0.0.3"
+    version = "0.0.1"
     status = "production"
 
     @classmethod
     def pre_calculate(cls):
-        print(f'{UserProjectFieldsBased.__name__}: Create user and project relation by fields.')
+        print(f'{ProjectToUserFieldsBased.__name__}: Create user and project relation by fields.')
         user_project_by_fields = UserProjectRelationship()
         user_project_by_fields.fill_relations()
         Relation.objects.create(row_count=user_project_by_fields.row_count(),
@@ -47,7 +47,7 @@ class UserProjectFieldsBased(Recommender):
         prediction = prediction.melt().sort_values('value', ascending=False)
         top_100_projects = prediction.head(100)['variable'].to_list()
         return {"projects": top_100_projects, "label": "top_related_projects", "status": "OK",
-                "alg_name": UserProjectFieldsBased.algorithm_name}
+                "alg_name": ProjectToUserFieldsBased.algorithm_name}
 
     def compute_prediction(self, input_data):
         try:

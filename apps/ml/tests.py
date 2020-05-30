@@ -2,7 +2,7 @@ from django.test import TestCase
 import inspect
 
 from apps.ml.project_recommender.fields_or_interacted_based import FieldsOrInteractedBased
-from apps.ml.project_recommender.user_project_fields_based import UserProjectFieldsBased
+from apps.ml.project_recommender.user_project_fields_based import ProjectToUserFieldsBased
 from apps.ml.project_recommender.interacted_projects_based import InteractedProjectsBased
 from apps.ml.registry import RecRegistry
 from apps.kstorage.models import User, Project
@@ -25,14 +25,14 @@ class RecommenderTest(TestCase):
 
         ProjectRecommenderService.perform_precalculations()
 
-    def test_user_project_fields_based(self):
+    def test_project_to_user_fields_based(self):
         input_data = {"user_id": 13}
-        my_alg = UserProjectFieldsBased()
+        my_alg = ProjectToUserFieldsBased()
         response = my_alg.compute_prediction(input_data)
         self.assertEqual('OK', response['status'])
         self.assertTrue('label' in response)
         self.assertTrue('projects' in response)
-        self.assertEqual(UserProjectFieldsBased.algorithm_name, response['alg_name'])
+        self.assertEqual(ProjectToUserFieldsBased.algorithm_name, response['alg_name'])
 
     def test_interacted_projects_based(self):
         input_data = {"user_id": 13}
@@ -61,7 +61,7 @@ class RecommenderTest(TestCase):
         self.assertTrue('label' in response)
         self.assertTrue('projects' in response)
         # New user should use UserProjectFieldsBased algorithm
-        self.assertEqual(UserProjectFieldsBased.algorithm_name, response['alg_name'])
+        self.assertEqual(ProjectToUserFieldsBased.algorithm_name, response['alg_name'])
 
     def test_project_fields_based(self):
         input_data = {"project_id": 1}
@@ -75,14 +75,14 @@ class RecommenderTest(TestCase):
     def test_registry(self):
         registry = RecRegistry()
         self.assertEqual(len(registry.endpoints), 0)
-        endpoint_name = UserProjectFieldsBased.endpoint_name
-        algorithm_object = UserProjectFieldsBased()
-        algorithm_name = UserProjectFieldsBased.algorithm_name
-        algorithm_status = UserProjectFieldsBased.status
-        algorithm_version = UserProjectFieldsBased.version
-        algorithm_owner = UserProjectFieldsBased.owner
-        algorithm_description = UserProjectFieldsBased.description
-        algorithm_code = inspect.getsource(UserProjectFieldsBased)
+        endpoint_name = ProjectToUserFieldsBased.endpoint_name
+        algorithm_object = ProjectToUserFieldsBased()
+        algorithm_name = ProjectToUserFieldsBased.algorithm_name
+        algorithm_status = ProjectToUserFieldsBased.status
+        algorithm_version = ProjectToUserFieldsBased.version
+        algorithm_owner = ProjectToUserFieldsBased.owner
+        algorithm_description = ProjectToUserFieldsBased.description
+        algorithm_code = inspect.getsource(ProjectToUserFieldsBased)
         # add to registry
         registry.add_algorithm(endpoint_name, algorithm_object, algorithm_name,
                                algorithm_status, algorithm_version, algorithm_owner,

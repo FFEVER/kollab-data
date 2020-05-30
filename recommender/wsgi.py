@@ -18,7 +18,7 @@ application = get_wsgi_application()
 # ML registry
 import inspect
 from apps.ml.registry import RecRegistry
-from apps.ml.project_recommender.user_project_fields_based import UserProjectFieldsBased
+from apps.ml.project_recommender.user_project_fields_based import ProjectToUserFieldsBased
 from apps.ml.project_recommender.interacted_projects_based import InteractedProjectsBased
 from apps.ml.project_recommender.fields_or_interacted_based import FieldsOrInteractedBased
 from apps.ml.related_project.project_fields_based import ProjectFieldsBased
@@ -27,15 +27,15 @@ try:
     registry = RecRegistry()  # create ML registry
 
     # add to ML registry
-    upb = UserProjectFieldsBased()
-    registry.add_algorithm(endpoint_name=upb.endpoint_name,
-                           algorithm_object=upb,
-                           algorithm_name=upb.algorithm_name,
-                           algorithm_status=upb.status,
-                           algorithm_version=upb.version,
-                           owner=upb.owner,
-                           algorithm_description=upb.description,
-                           algorithm_code=inspect.getsource(UserProjectFieldsBased))
+    ptufb = ProjectToUserFieldsBased()
+    registry.add_algorithm(endpoint_name=ptufb.endpoint_name,
+                           algorithm_object=ptufb,
+                           algorithm_name=ptufb.algorithm_name,
+                           algorithm_status=ptufb.status,
+                           algorithm_version=ptufb.version,
+                           owner=ptufb.owner,
+                           algorithm_description=ptufb.description,
+                           algorithm_code=inspect.getsource(ProjectToUserFieldsBased))
 
     ipb = InteractedProjectsBased()
     registry.add_algorithm(endpoint_name=ipb.endpoint_name,

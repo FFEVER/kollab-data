@@ -12,7 +12,7 @@ class InteractedProjectsBased(Recommender):
     algorithm_name = "Interacted Projects Based"
     owner = "Nattaphol"
     description = "Recommend projects based on projects that a user interacts with in the past"
-    version = "0.0.2"
+    version = "0.0.3"
     status = "production"
 
     @classmethod
