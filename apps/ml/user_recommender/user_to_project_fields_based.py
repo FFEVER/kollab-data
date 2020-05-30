@@ -1,7 +1,7 @@
 import pickle
 import traceback
 
-from apps.kstorage.models import Project
+from apps.kstorage.models import Project, User
 from apps.ml.models import Relation
 
 from apps.ml.recommender import Recommender
@@ -37,7 +37,7 @@ class UserToProjectFieldsBased(Recommender):
         return -1
 
     def predict(self, input_data):
-        latest_relation = Relation.objects.filter(row_type=Project.__name__, col_type=Project.__name__,
+        latest_relation = Relation.objects.filter(row_type=Project.__name__, col_type=User.__name__,
                                                   alg_type=RelationCalcByFields.__name__).last()
         relation_df = pickle.loads(latest_relation.data_frame)
 
@@ -49,7 +49,7 @@ class UserToProjectFieldsBased(Recommender):
     def postprocessing(self, prediction):
         prediction = prediction.melt().sort_values('value', ascending=False)
         recommended_users = prediction.head(100)['variable'].to_list()
-        return {"projects": recommended_users, "label": "Recommended users", "status": "OK",
+        return {"users": recommended_users, "label": "Recommended users", "status": "OK",
                 "alg_name": UserToProjectFieldsBased.algorithm_name}
 
     def compute_prediction(self, input_data):
