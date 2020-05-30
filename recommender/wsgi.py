@@ -20,12 +20,13 @@ import inspect
 from apps.ml.registry import RecRegistry
 from apps.ml.project_recommender.user_project_fields_based import UserProjectFieldsBased
 from apps.ml.project_recommender.interacted_projects_based import InteractedProjectsBased
+from apps.ml.project_recommender.fields_or_interacted_based import FieldsOrInteractedBased
 
 try:
     registry = RecRegistry()  # create ML registry
-    # Random Forest classifier
-    upb = UserProjectFieldsBased()
+
     # add to ML registry
+    upb = UserProjectFieldsBased()
     registry.add_algorithm(endpoint_name=upb.endpoint_name,
                            algorithm_object=upb,
                            algorithm_name=upb.algorithm_name,
@@ -44,6 +45,16 @@ try:
                            owner=ipb.owner,
                            algorithm_description=ipb.description,
                            algorithm_code=inspect.getsource(InteractedProjectsBased))
+
+    foib = FieldsOrInteractedBased()
+    registry.add_algorithm(endpoint_name=foib.endpoint_name,
+                           algorithm_object=foib,
+                           algorithm_name=foib.algorithm_name,
+                           algorithm_status=foib.status,
+                           algorithm_version=foib.version,
+                           owner=foib.owner,
+                           algorithm_description=foib.description,
+                           algorithm_code=inspect.getsource(FieldsOrInteractedBased))
 
 except Exception as e:
     print("Exception while loading the algorithms to the registry,", str(e))

@@ -1,6 +1,7 @@
 from django.test import TestCase
 import inspect
 
+from apps.ml.project_recommender.fields_or_interacted_based import FieldsOrInteractedBased
 from apps.ml.project_recommender.user_project_fields_based import UserProjectFieldsBased
 from apps.ml.project_recommender.interacted_projects_based import InteractedProjectsBased
 from apps.ml.registry import RecRegistry
@@ -13,8 +14,10 @@ class MLTests(TestCase):
     @classmethod
     def setUpTestData(cls):
         super(MLTests, cls).setUpTestData()
-        User.objects.create(id=13, fields=[[1, 2, 3], [4, 5, -1]], email="test@test.com", role="student",
-                            faculty_id=1, skills=["skill1", "skill2"], year="1")
+        User.objects.create(id=13, email="eit@gmail.com", role="student", faculty_id=1, year="1",
+                            fields=[[1, 2, 3], [5, 6, -1]], skills=["a", "b", "c"],
+                            joined_projects=[1, 2, 3], starred_projects=[4, 5, 6], viewed_projects=[7, 8, 9],
+                            followed_projects=[10, 11, 12])
         Project.objects.create(id=1, title="test", project_status=1, fields=[[1, 2, -1], [5, 6, -1]],
                                tags=["tag1", "tag2"], created_at="2020-03-22T10:19:12.782Z",
                                updated_at="2020-03-22T10:19:12.782Z")
@@ -38,6 +41,24 @@ class MLTests(TestCase):
         self.assertTrue('label' in response)
         self.assertTrue('projects' in response)
         self.assertEqual(InteractedProjectsBased.algorithm_name, response['alg_name'])
+
+    def test_fields_or_interacted_based_with_old_user(self):
+        input_data = {"user_id": 13}
+        my_alg = FieldsOrInteractedBased()
+        response = my_alg.compute_prediction(input_data)
+        self.assertEqual('OK', response['status'])
+        self.assertTrue('label' in response)
+        self.assertTrue('projects' in response)
+        self.assertEqual(InteractedProjectsBased.algorithm_name, response['alg_name'])
+
+    def test_fields_or_interacted_based_with_new_user(self):
+        input_data = {"user_id": 1}
+        my_alg = FieldsOrInteractedBased()
+        response = my_alg.compute_prediction(input_data)
+        self.assertEqual('OK', response['status'])
+        self.assertTrue('label' in response)
+        self.assertTrue('projects' in response)
+        self.assertEqual(UserProjectFieldsBased.algorithm_name, response['alg_name'])
 
     def test_registry(self):
         registry = RecRegistry()

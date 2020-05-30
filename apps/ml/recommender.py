@@ -45,10 +45,10 @@ class Recommender(ABC):
 
     def compute_prediction(self, input_data):
         try:
-            input_data = self.preprocessing(input_data)
-            prediction = self.predict(input_data)
-            prediction = self.postprocessing(prediction)
+            processed_input_data = self.preprocessing(input_data)
+            prediction = self.predict(processed_input_data)
+            processed_prediction = self.postprocessing(prediction)
         except Exception as e:
             return {"status": "Error", "message": str(e)}
 
-        return prediction
+        return processed_prediction
