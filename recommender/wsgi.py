@@ -18,7 +18,7 @@ application = get_wsgi_application()
 # ML registry
 import inspect
 from apps.ml.registry import RecRegistry
-from apps.ml.project_recommender.user_project_fields_based import ProjectToUserFieldsBased
+from apps.ml.project_recommender.project_to_user_fields_based import ProjectToUserFieldsBased
 from apps.ml.project_recommender.interacted_projects_based import InteractedProjectsBased
 from apps.ml.project_recommender.fields_or_interacted_based import FieldsOrInteractedBased
 from apps.ml.related_project.project_fields_based import ProjectFieldsBased
