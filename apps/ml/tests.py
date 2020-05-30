@@ -6,14 +6,15 @@ from apps.ml.project_recommender.user_project_fields_based import UserProjectFie
 from apps.ml.project_recommender.interacted_projects_based import InteractedProjectsBased
 from apps.ml.registry import RecRegistry
 from apps.kstorage.models import User, Project
+from apps.ml.related_project.project_fields_based import ProjectFieldsBased
 from apps.ml.services import ProjectRecommenderService
 
 
-class MLTests(TestCase):
+class RecommenderTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        super(MLTests, cls).setUpTestData()
+        super(RecommenderTest, cls).setUpTestData()
         User.objects.create(id=13, email="eit@gmail.com", role="student", faculty_id=1, year="1",
                             fields=[[1, 2, 3], [5, 6, -1]], skills=["a", "b", "c"],
                             joined_projects=[1, 2, 3], starred_projects=[4, 5, 6], viewed_projects=[7, 8, 9],
@@ -49,6 +50,7 @@ class MLTests(TestCase):
         self.assertEqual('OK', response['status'])
         self.assertTrue('label' in response)
         self.assertTrue('projects' in response)
+        # Old user should use InteractedProjectBased algorithm
         self.assertEqual(InteractedProjectsBased.algorithm_name, response['alg_name'])
 
     def test_fields_or_interacted_based_with_new_user(self):
@@ -58,7 +60,17 @@ class MLTests(TestCase):
         self.assertEqual('OK', response['status'])
         self.assertTrue('label' in response)
         self.assertTrue('projects' in response)
+        # New user should use UserProjectFieldsBased algorithm
         self.assertEqual(UserProjectFieldsBased.algorithm_name, response['alg_name'])
+
+    def test_project_fields_based(self):
+        input_data = {"project_id": 1}
+        my_alg = ProjectFieldsBased()
+        response = my_alg.compute_prediction(input_data)
+        self.assertEqual('OK', response['status'])
+        self.assertTrue('label' in response)
+        self.assertTrue('projects' in response)
+        self.assertEqual(ProjectFieldsBased.algorithm_name, response['alg_name'])
 
     def test_registry(self):
         registry = RecRegistry()

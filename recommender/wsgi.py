@@ -11,6 +11,8 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
+from apps.ml.related_project.project_fields_based import ProjectFieldsBased
+
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'recommender.settings')
 
 application = get_wsgi_application()
@@ -55,6 +57,16 @@ try:
                            owner=foib.owner,
                            algorithm_description=foib.description,
                            algorithm_code=inspect.getsource(FieldsOrInteractedBased))
+
+    pfb = ProjectFieldsBased()
+    registry.add_algorithm(endpoint_name=pfb.endpoint_name,
+                           algorithm_object=pfb,
+                           algorithm_name=pfb.algorithm_name,
+                           algorithm_status=pfb.status,
+                           algorithm_version=pfb.version,
+                           owner=pfb.owner,
+                           algorithm_description=pfb.description,
+                           algorithm_code=inspect.getsource(ProjectFieldsBased))
 
 except Exception as e:
     print("Exception while loading the algorithms to the registry,", str(e))

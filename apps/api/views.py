@@ -77,6 +77,7 @@ class PredictView(views.APIView):
         algs = RecAlgorithm.objects.filter(parent_endpoint__name=endpoint_name, status__status=algorithm_status,
                                            status__active=True)
 
+
         if algorithm_version is not None:
             algs = algs.filter(version=algorithm_version)
 
