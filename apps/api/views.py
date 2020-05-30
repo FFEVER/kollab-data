@@ -10,11 +10,11 @@ from rest_framework.exceptions import APIException
 
 from apps.api.models import Endpoint
 from apps.api.serializers import EndpointSerializer
-from apps.api.models import MLAlgorithm
+from apps.api.models import RecAlgorithm
 from apps.api.serializers import RecAlgorithmSerializer
-from apps.api.models import MLAlgorithmStatus
+from apps.api.models import RecAlgorithmStatus
 from apps.api.serializers import RecAlgorithmStatusSerializer
-from apps.api.models import MLRequest
+from apps.api.models import RecRequest
 from apps.api.serializers import RecRequestSerializer
 
 from apps.ml.registry import MLRegistry
@@ -32,16 +32,16 @@ class MLAlgorithmViewSet(
     mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet
 ):
     serializer_class = RecAlgorithmSerializer
-    queryset = MLAlgorithm.objects.all()
+    queryset = RecAlgorithm.objects.all()
 
 
 def deactivate_other_statuses(instance):
-    old_statuses = MLAlgorithmStatus.objects.filter(parent_mlalgorithm=instance.parent_mlalgorithm,
-                                                    created_at__lt=instance.created_at,
-                                                    active=True)
+    old_statuses = RecAlgorithmStatus.objects.filter(parent_mlalgorithm=instance.parent_mlalgorithm,
+                                                     created_at__lt=instance.created_at,
+                                                     active=True)
     for i in range(len(old_statuses)):
         old_statuses[i].active = False
-    MLAlgorithmStatus.objects.bulk_update(old_statuses, ["active"])
+    RecAlgorithmStatus.objects.bulk_update(old_statuses, ["active"])
 
 
 class MLAlgorithmStatusViewSet(
@@ -49,7 +49,7 @@ class MLAlgorithmStatusViewSet(
     mixins.CreateModelMixin
 ):
     serializer_class = RecAlgorithmStatusSerializer
-    queryset = MLAlgorithmStatus.objects.all()
+    queryset = RecAlgorithmStatus.objects.all()
 
     def perform_create(self, serializer):
         try:
@@ -66,7 +66,7 @@ class MLRequestViewSet(
     mixins.UpdateModelMixin
 ):
     serializer_class = RecRequestSerializer
-    queryset = MLRequest.objects.all()
+    queryset = RecRequest.objects.all()
 
 
 class PredictView(views.APIView):
@@ -75,8 +75,8 @@ class PredictView(views.APIView):
         algorithm_status = self.request.query_params.get("status", "production")
         algorithm_version = self.request.query_params.get("version")
 
-        algs = MLAlgorithm.objects.filter(parent_endpoint__name=endpoint_name, status__status=algorithm_status,
-                                          status__active=True)
+        algs = RecAlgorithm.objects.filter(parent_endpoint__name=endpoint_name, status__status=algorithm_status,
+                                           status__active=True)
 
         if algorithm_version is not None:
             algs = algs.filter(version=algorithm_version)
@@ -97,7 +97,7 @@ class PredictView(views.APIView):
         prediction = algorithm_object.compute_prediction(request.data)
 
         label = prediction["label"] if "label" in prediction else "error"
-        ml_request = MLRequest(
+        ml_request = RecRequest(
             input_data=json.dumps(request.data),
             full_response=prediction,
             response=label,

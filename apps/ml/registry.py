@@ -1,6 +1,6 @@
 from apps.api.models import Endpoint
-from apps.api.models import MLAlgorithm
-from apps.api.models import MLAlgorithmStatus
+from apps.api.models import RecAlgorithm
+from apps.api.models import RecAlgorithmStatus
 
 
 class MLRegistry:
@@ -14,7 +14,7 @@ class MLRegistry:
         endpoint, _ = Endpoint.objects.get_or_create(name=endpoint_name, owner=owner)
 
         # get algorithm
-        database_object, algorithm_created = MLAlgorithm.objects.get_or_create(
+        database_object, algorithm_created = RecAlgorithm.objects.get_or_create(
             name=algorithm_name,
             description=algorithm_description,
             code=algorithm_code,
@@ -22,10 +22,10 @@ class MLRegistry:
             owner=owner,
             parent_endpoint=endpoint)
         if algorithm_created:
-            status = MLAlgorithmStatus(status=algorithm_status,
-                                       created_by=owner,
-                                       parent_mlalgorithm=database_object,
-                                       active=True)
+            status = RecAlgorithmStatus(status=algorithm_status,
+                                        created_by=owner,
+                                        parent_mlalgorithm=database_object,
+                                        active=True)
             status.save()
 
         # add to registry

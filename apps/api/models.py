@@ -18,7 +18,7 @@ class Endpoint(models.Model):
         return self.name
 
 
-class MLAlgorithm(models.Model):
+class RecAlgorithm(models.Model):
     '''
     The MLAlgorithm represent the ML algorithm object.
 
@@ -43,7 +43,7 @@ class MLAlgorithm(models.Model):
         return self.name
 
 
-class MLAlgorithmStatus(models.Model):
+class RecAlgorithmStatus(models.Model):
     '''
     The MLAlgorithmStatus represent status of the MLAlgorithm which can change during the time.
 
@@ -59,13 +59,13 @@ class MLAlgorithmStatus(models.Model):
     active = models.BooleanField()
     created_by = models.CharField(max_length=128)
     created_at = models.DateTimeField(auto_now_add=True, blank=True)
-    parent_mlalgorithm = models.ForeignKey(MLAlgorithm, on_delete=models.CASCADE, related_name="status")
+    parent_mlalgorithm = models.ForeignKey(RecAlgorithm, on_delete=models.CASCADE, related_name="status")
 
     def __str__(self):
         return self.status
 
 
-class MLRequest(models.Model):
+class RecRequest(models.Model):
     '''
     The MLRequest will keep information about all requests to ML algorithms.
 
@@ -82,7 +82,7 @@ class MLRequest(models.Model):
     response = models.CharField(max_length=10000)
     feedback = models.CharField(max_length=10000, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True, blank=True)
-    parent_mlalgorithm = models.ForeignKey(MLAlgorithm, on_delete=models.CASCADE)
+    parent_mlalgorithm = models.ForeignKey(RecAlgorithm, on_delete=models.CASCADE)
 
     def __str__(self):
         return str(self.parent_mlalgorithm)
