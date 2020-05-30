@@ -3,7 +3,7 @@ from apps.api.models import RecAlgorithm
 from apps.api.models import RecAlgorithmStatus
 
 
-class MLRegistry:
+class RecRegistry:
     def __init__(self):
         self.endpoints = {}
 
@@ -24,7 +24,7 @@ class MLRegistry:
         if algorithm_created:
             status = RecAlgorithmStatus(status=algorithm_status,
                                         created_by=owner,
-                                        parent_mlalgorithm=database_object,
+                                        parent_algorithm=database_object,
                                         active=True)
             status.save()
 

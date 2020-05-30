@@ -3,7 +3,7 @@ import inspect
 
 from apps.ml.project_recommender.user_project_fields_based import UserProjectFieldsBased
 from apps.ml.project_recommender.interacted_projects_based import InteractedProjectsBased
-from apps.ml.registry import MLRegistry
+from apps.ml.registry import RecRegistry
 from apps.kstorage.models import User, Project
 from apps.ml.services import ProjectRecommenderService
 
@@ -40,7 +40,7 @@ class MLTests(TestCase):
         self.assertEqual(InteractedProjectsBased.algorithm_name, response['alg_name'])
 
     def test_registry(self):
-        registry = MLRegistry()
+        registry = RecRegistry()
         self.assertEqual(len(registry.endpoints), 0)
         endpoint_name = UserProjectFieldsBased.endpoint_name
         algorithm_object = UserProjectFieldsBased()

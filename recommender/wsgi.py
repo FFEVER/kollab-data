@@ -17,12 +17,12 @@ application = get_wsgi_application()
 
 # ML registry
 import inspect
-from apps.ml.registry import MLRegistry
+from apps.ml.registry import RecRegistry
 from apps.ml.project_recommender.user_project_fields_based import UserProjectFieldsBased
 from apps.ml.project_recommender.interacted_projects_based import InteractedProjectsBased
 
 try:
-    registry = MLRegistry()  # create ML registry
+    registry = RecRegistry()  # create ML registry
     # Random Forest classifier
     upb = UserProjectFieldsBased()
     # add to ML registry
