@@ -8,10 +8,13 @@ class EndpointAdmin(admin.ModelAdmin):
 
 
 class RecAlgorithmAdmin(admin.ModelAdmin):
-    list_display = ('name', 'parent_endpoint', 'status', 'description', 'version', 'owner', 'created_at')
+    list_display = ('name', 'parent_endpoint', 'status', 'active', 'description', 'version', 'owner', 'created_at')
 
     def status(self, obj):
         return RecAlgorithmStatus.objects.filter(parent_algorithm=obj).last().status
+
+    def active(self, obj):
+        return RecAlgorithmStatus.objects.filter(parent_algorithm=obj).last().active
 
 
 class RecAlgorithmStatusAdmin(admin.ModelAdmin):
