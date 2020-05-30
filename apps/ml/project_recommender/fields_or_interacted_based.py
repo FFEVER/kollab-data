@@ -1,6 +1,6 @@
 import traceback
 
-from apps.kstorage.models import User, Project
+from apps.kstorage.models import User
 
 from apps.ml.project_recommender.interacted_projects_based import InteractedProjectsBased
 from apps.ml.project_recommender.user_project_fields_based import UserProjectFieldsBased

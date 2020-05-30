@@ -24,7 +24,7 @@ class EndpointTests(TestCase):
     def test_project_rec(self):
         client = APIClient()
         input_data = {"user_id": 1}
-        classifier_url = "/api/v1/project_recommender"
+        classifier_url = "/api/v1/project_recommender/predict"
         response = client.post(classifier_url, input_data, format='json')
         self.assertEqual(response.status_code, 200)
         self.assertTrue("projects" in response.data)
@@ -35,7 +35,18 @@ class EndpointTests(TestCase):
     def test_project_rec_with_unknown_user(self):
         client = APIClient()
         input_data = {"user_id": 13}
-        classifier_url = "/api/v1/project_recommender"
+        classifier_url = "/api/v1/project_recommender/predict"
+        response = client.post(classifier_url, input_data, format='json')
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue("projects" in response.data)
+        self.assertTrue("request_id" in response.data)
+        self.assertTrue("status" in response.data)
+        self.assertTrue("alg_name" in response.data)
+
+    def test_related_project(self):
+        client = APIClient()
+        input_data = {"project_id": 1}
+        classifier_url = "/api/v1/related_project/predict"
         response = client.post(classifier_url, input_data, format='json')
         self.assertEqual(response.status_code, 200)
         self.assertTrue("projects" in response.data)
