@@ -20,7 +20,7 @@ from apps.api.urls import urlpatterns as endpoints_urlpatterns
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('/', admin.site.urls),
+    path('', admin.site.urls),
 ]
 
 urlpatterns += endpoints_urlpatterns
