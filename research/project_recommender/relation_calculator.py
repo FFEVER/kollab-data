@@ -72,27 +72,31 @@ class RelationCalcByInteractions(RelationCalculator):
 
     def __init__(self):
         self.project_df = pickle.loads(
-            Relation.objects.filter(row_type=Project.__name__, col_type=Project.__name__).last().data_frame)
+            Relation.objects.filter(row_type=Project.__name__, col_type=Project.__name__,
+                                    alg_type=RelationCalcByFields.__name__).last().data_frame)
 
     def calc_relation(self, user: User, project: Project):
         try:
-            if self.__check_conditions(user, project) == False:
+            if not self.__check_conditions(user, project):
                 return 0
 
-            sim_list = []
-            m_sim = self.calc_by_weighted_values(project, user.joined_projects, self.MEMBER_WEIGHT, self.MAX_MEMBERS)
-            sim_list.append(m_sim)
-            s_sim = self.calc_by_weighted_values(project, user.starred_projects, self.STAR_WEIGHT, self.MAX_STARS)
-            sim_list.append(s_sim)
-            f_sim = self.calc_by_weighted_values(project, user.followed_projects, self.FOLLOW_WEIGHT, self.MAX_FOLLOWS)
-            sim_list.append(f_sim)
-            v_sim = self.calc_by_weighted_values(project, user.viewed_projects, self.VIEW_WEIGHT, self.MAX_VIEWS)
-            sim_list.append(v_sim)
+            m_weights, m_sims = self.calc_by_weighted_values(project, user.joined_projects, self.MEMBER_WEIGHT,
+                                                             1, self.MAX_MEMBERS)
+            s_weights, s_sims = self.calc_by_weighted_values(project, user.starred_projects, self.STAR_WEIGHT,
+                                                             1, self.MAX_STARS)
+            f_weights, f_sims = self.calc_by_weighted_values(project, user.followed_projects, self.FOLLOW_WEIGHT,
+                                                             1, self.MAX_FOLLOWS)
+            v_weights, v_sims = self.calc_by_weighted_values(project, user.viewed_projects, self.VIEW_WEIGHT,
+                                                             1, self.MAX_VIEWS)
 
-            return np.average(sim_list)
+            sim_list = m_sims + s_sims + f_sims + v_sims
+            weight_list = m_weights + s_weights + f_weights + v_weights
+            weighted_avg = np.average(sim_list, weights=weight_list)
+
+            return weighted_avg
 
         except Exception as e:
-            print("Exception while calculating relation,", str(e))
+            print("Exception while calculating relation,", e)
             return 0
 
     def __check_conditions(self, user, project):
@@ -100,9 +104,7 @@ class RelationCalcByInteractions(RelationCalculator):
             return False
         return True
 
-    def calc_by_weighted_values(self, target_project, comparing_project_ids, max_weight, max_n_projects):
-        if len(comparing_project_ids) <= 0:
-            return 0
+    def calc_by_weighted_values(self, target_project, comparing_project_ids, max_weight, min_weight, max_n_projects):
         count = 0
         sim_list = []
         weight_list = []
@@ -112,6 +114,9 @@ class RelationCalcByInteractions(RelationCalculator):
             if not comparing_id in self.project_df:
                 continue
 
+            if count == max_n_projects:
+                break
+
             row_id = target_project.id
             similarity = self.project_df.loc[row_id, comparing_id]
 
@@ -119,11 +124,26 @@ class RelationCalcByInteractions(RelationCalculator):
             weight_list.append(current_weight)
 
             count += 1
-            current_weight = self.__normalize_weight(max_weight, max_n_projects, count)
+            current_weight = self.__normalize_weight(max_weight, min_weight, max_n_projects, count)
 
-        weighted_avg = np.average(sim_list, weights=weight_list)
+        return weight_list, sim_list
 
-        return weighted_avg
+    def __normalize_weight(self, max_weight, min_weight, max_n_projects, count):
+        return max_weight - (count * ((max_weight - min_weight) / (max_n_projects - 1)))
 
-    def __normalize_weight(self, max_weight, max_n_projects, count):
-        return max_weight - (count * (max_weight / max_n_projects))
+
+# class UserProjectCalcBySimilarProjects(RelationCalculator):
+#     def __init__(self):
+#         self.project_df = pickle.loads(
+#             Relation.objects.filter(row_type=Project.__name__, col_type=Project.__name__).last().data_frame)
+# 
+#     def calc_relation(self, project, user):
+#         pass
+#         # p_id = project.id
+#         # related_projects = self.find_related_projects(project.id)
+#         # for p in related_projects
+#
+#     def find_related_projects(self, project_id):
+#         related_projects = self.project_df.loc[[project_id]].melt().sort_values('value', ascending=False)
+#         related_projects.head(100)['variable'].to_list()
+#         return related_projects
