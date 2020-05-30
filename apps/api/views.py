@@ -11,11 +11,11 @@ from rest_framework.exceptions import APIException
 from apps.api.models import Endpoint
 from apps.api.serializers import EndpointSerializer
 from apps.api.models import MLAlgorithm
-from apps.api.serializers import MLAlgorithmSerializer
+from apps.api.serializers import RecAlgorithmSerializer
 from apps.api.models import MLAlgorithmStatus
-from apps.api.serializers import MLAlgorithmStatusSerializer
+from apps.api.serializers import RecAlgorithmStatusSerializer
 from apps.api.models import MLRequest
-from apps.api.serializers import MLRequestSerializer
+from apps.api.serializers import RecRequestSerializer
 
 from apps.ml.registry import MLRegistry
 from recommender.wsgi import registry
@@ -31,7 +31,7 @@ class EndpointViewSet(
 class MLAlgorithmViewSet(
     mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet
 ):
-    serializer_class = MLAlgorithmSerializer
+    serializer_class = RecAlgorithmSerializer
     queryset = MLAlgorithm.objects.all()
 
 
@@ -48,7 +48,7 @@ class MLAlgorithmStatusViewSet(
     mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet,
     mixins.CreateModelMixin
 ):
-    serializer_class = MLAlgorithmStatusSerializer
+    serializer_class = RecAlgorithmStatusSerializer
     queryset = MLAlgorithmStatus.objects.all()
 
     def perform_create(self, serializer):
@@ -65,7 +65,7 @@ class MLRequestViewSet(
     mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet,
     mixins.UpdateModelMixin
 ):
-    serializer_class = MLRequestSerializer
+    serializer_class = RecRequestSerializer
     queryset = MLRequest.objects.all()
 
 
