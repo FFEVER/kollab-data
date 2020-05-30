@@ -27,7 +27,7 @@ class InteractedProjectsBased(Recommender):
         # Relation table for project/project
         project_by_fields = ProjectRelationship()
         project_by_fields.fill_relations()
-        Relation.objects.create(row_count=project_by_fields.row_count(),
+        Relation.objects.get_or_create(row_count=project_by_fields.row_count(),
                                 col_count=project_by_fields.col_count(),
                                 row_type=project_by_fields.row_type(),
                                 col_type=project_by_fields.col_type(),

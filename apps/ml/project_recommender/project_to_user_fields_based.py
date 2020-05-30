@@ -20,7 +20,7 @@ class ProjectToUserFieldsBased(Recommender):
         print(f'{ProjectToUserFieldsBased.__name__}: Create user and project relation by fields.')
         user_project_by_fields = UserProjectRelationship()
         user_project_by_fields.fill_relations()
-        Relation.objects.create(row_count=user_project_by_fields.row_count(),
+        Relation.objects.get_or_create(row_count=user_project_by_fields.row_count(),
                                 col_count=user_project_by_fields.col_count(),
                                 row_type=user_project_by_fields.row_type(),
                                 col_type=user_project_by_fields.col_type(),
