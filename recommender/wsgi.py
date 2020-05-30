@@ -11,8 +11,6 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
-from apps.ml.related_project.project_fields_based import ProjectFieldsBased
-
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'recommender.settings')
 
 application = get_wsgi_application()
@@ -23,6 +21,7 @@ from apps.ml.registry import RecRegistry
 from apps.ml.project_recommender.user_project_fields_based import UserProjectFieldsBased
 from apps.ml.project_recommender.interacted_projects_based import InteractedProjectsBased
 from apps.ml.project_recommender.fields_or_interacted_based import FieldsOrInteractedBased
+from apps.ml.related_project.project_fields_based import ProjectFieldsBased
 
 try:
     registry = RecRegistry()  # create ML registry
