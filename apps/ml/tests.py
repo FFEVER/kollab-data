@@ -8,6 +8,7 @@ from apps.ml.registry import RecRegistry
 from apps.kstorage.models import User, Project
 from apps.ml.related_project.project_fields_based import ProjectFieldsBased
 from apps.ml.services import ProjectRecommenderService
+from apps.ml.user_recommender.user_to_project_fields_based import UserToProjectFieldsBased
 
 
 class RecommenderTest(TestCase):
@@ -71,6 +72,15 @@ class RecommenderTest(TestCase):
         self.assertTrue('label' in response)
         self.assertTrue('projects' in response)
         self.assertEqual(ProjectFieldsBased.algorithm_name, response['alg_name'])
+
+    def test_user_to_project_fields_based(self):
+        input_data = {"project_id": 1}
+        my_alg = UserToProjectFieldsBased()
+        response = my_alg.compute_prediction(input_data)
+        self.assertEqual('OK', response['status'])
+        self.assertTrue('label' in response)
+        self.assertTrue('users' in response)
+        self.assertEqual(UserToProjectFieldsBased.algorithm_name, response['alg_name'])
 
     def test_registry(self):
         registry = RecRegistry()
