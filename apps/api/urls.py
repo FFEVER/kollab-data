@@ -16,6 +16,6 @@ router.register(r"recrequests", RecRequestViewSet, basename="recrequests")
 urlpatterns = [
     url(r"^api/v1/", include(router.urls)),
     url(
-        r"^api/v1/(?P<endpoint_name>.+)/predict$", PredictView.as_view(), name="predict"
+        r"^api/v1/(?P<endpoint_name>.+)$", PredictView.as_view(), name="predict"
     ),
 ]
