@@ -31,7 +31,7 @@ class InteractedProjectsBased(Recommender):
                                 col_count=project_by_fields.col_count(),
                                 row_type=project_by_fields.row_type(),
                                 col_type=project_by_fields.col_type(),
-                                data_frame=project_by_fields.get_picked_relations(),
+                                data_frame=project_by_fields.get_pickled_relations(),
                                 alg_type=project_by_fields.alg_type())
 
     @staticmethod
@@ -43,7 +43,7 @@ class InteractedProjectsBased(Recommender):
                                 col_count=user_project_interactions.col_count(),
                                 row_type=user_project_interactions.row_type(),
                                 col_type=user_project_interactions.col_type(),
-                                data_frame=user_project_interactions.get_picked_relations(),
+                                data_frame=user_project_interactions.get_pickled_relations(),
                                 alg_type=user_project_interactions.alg_type())
 
     def preprocessing(self, input_data):

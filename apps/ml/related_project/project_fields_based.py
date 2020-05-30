@@ -27,7 +27,7 @@ class ProjectFieldsBased(Recommender):
                                        col_count=project_by_fields.col_count(),
                                        row_type=project_by_fields.row_type(),
                                        col_type=project_by_fields.col_type(),
-                                       data_frame=project_by_fields.get_picked_relations(),
+                                       data_frame=project_by_fields.get_pickled_relations(),
                                        alg_type=project_by_fields.alg_type())
 
     def preprocessing(self, input_data):
