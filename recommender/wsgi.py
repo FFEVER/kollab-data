@@ -22,6 +22,7 @@ from apps.ml.project_recommender.user_project_fields_based import ProjectToUserF
 from apps.ml.project_recommender.interacted_projects_based import InteractedProjectsBased
 from apps.ml.project_recommender.fields_or_interacted_based import FieldsOrInteractedBased
 from apps.ml.related_project.project_fields_based import ProjectFieldsBased
+from apps.ml.user_recommender.user_to_project_fields_based import UserToProjectFieldsBased
 
 try:
     registry = RecRegistry()  # create ML registry
@@ -66,6 +67,16 @@ try:
                            owner=pfb.owner,
                            algorithm_description=pfb.description,
                            algorithm_code=inspect.getsource(ProjectFieldsBased))
+
+    utpfb = UserToProjectFieldsBased()
+    registry.add_algorithm(endpoint_name=utpfb.endpoint_name,
+                           algorithm_object=utpfb,
+                           algorithm_name=utpfb.algorithm_name,
+                           algorithm_status=utpfb.status,
+                           algorithm_version=utpfb.version,
+                           owner=utpfb.owner,
+                           algorithm_description=utpfb.description,
+                           algorithm_code=inspect.getsource(UserToProjectFieldsBased))
 
 except Exception as e:
     print("Exception while loading the algorithms to the registry,", str(e))
