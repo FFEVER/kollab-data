@@ -1,4 +1,6 @@
 import itertools
+import traceback
+
 from scipy.spatial.distance import cosine
 from abc import ABC, abstractmethod
 import pickle
@@ -96,6 +98,7 @@ class RelationCalcByInteractions(RelationCalculator):
             return weighted_avg
 
         except Exception as e:
+            traceback.print_exc()
             print("Exception while calculating relation,", e)
             return 0
 
@@ -131,6 +134,48 @@ class RelationCalcByInteractions(RelationCalculator):
     def __normalize_weight(self, max_weight, min_weight, max_n_projects, count):
         return max_weight - (count * ((max_weight - min_weight) / (max_n_projects - 1)))
 
+
+class UserToUserCalcByInteractions(RelationCalculator):
+    def __init__(self):
+        self.project_df = pickle.loads(
+            Relation.objects.filter(row_type=Project.__name__, col_type=Project.__name__,
+                                    alg_type=RelationCalcByFields.__name__).last().data_frame)
+
+    def calc_relation(self, user1, user2):
+        try:
+            u1_projects = user1.interacted_projects()
+            u2_projects = user2.interacted_projects()
+            return self.calc_sim_by_interacted_projects(u1_projects, u2_projects)
+        except Exception as e:
+            traceback.print_exc()
+            print("Exception while calculating relation,", e)
+
+    def calc_sim_by_interacted_projects(self, project_list_1, project_list_2):
+        unique = list(set(project_list_1).union(project_list_2))
+        sim_list_1 = list()
+        sim_list_2 = list()
+        for p_id in unique:
+            if not p_id in self.project_df:
+                continue
+
+            # Similarity vector of user 1
+            sim_temp = []
+            for p1_id in project_list_1:
+                if not p1_id in self.project_df:
+                    continue
+                sim_temp.append(self.project_df.loc[p1_id, p_id])
+            sim_list_1.append(max(sim_temp))
+
+            # Similarity vector of user 2
+            sim_temp = []
+            for p2_id in project_list_2:
+                if not p2_id in self.project_df:
+                    continue
+                sim_temp.append(self.project_df.loc[p2_id, p_id])
+            sim_list_2.append(max(sim_temp))
+
+        val_out = 1 - cosine(sim_list_1, sim_list_2)
+        return val_out
 
 # class UserProjectCalcBySimilarProjects(RelationCalculator):
 #     def __init__(self):

@@ -15,6 +15,9 @@ class User(models.Model):
     followed_projects = ArrayField(models.IntegerField(blank=True, null=True), default=list)
     year = models.CharField(max_length=20, null=True)
 
+    def interacted_projects(self):
+        return self.joined_projects + self.starred_projects + self.viewed_projects + self.followed_projects
+
     def __str__(self):
         return self.email
 
