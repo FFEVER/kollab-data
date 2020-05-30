@@ -16,7 +16,7 @@ class RecAlgorithmSerializer(serializers.ModelSerializer):
     current_status = serializers.SerializerMethodField(read_only=True)
 
     def get_current_status(self, mlalgorithm):
-        return RecAlgorithmStatus.objects.filter(parent_mlalgorithm=mlalgorithm).latest('created_at').status
+        return RecAlgorithmStatus.objects.filter(parent_algorithm=mlalgorithm).latest('created_at').status
 
     class Meta:
         model = RecAlgorithm
@@ -31,7 +31,7 @@ class RecAlgorithmStatusSerializer(serializers.ModelSerializer):
         model = RecAlgorithmStatus
         read_only_fields = ("id", "active")
         fields = ("id", "active", "status", "created_by", "created_at",
-                  "parent_mlalgorithm")
+                  "parent_algorithm")
 
 
 class RecRequestSerializer(serializers.ModelSerializer):
@@ -43,7 +43,7 @@ class RecRequestSerializer(serializers.ModelSerializer):
             "full_response",
             "response",
             "created_at",
-            "parent_mlalgorithm",
+            "parent_algorithm",
         )
         fields = (
             "id",
@@ -52,5 +52,5 @@ class RecRequestSerializer(serializers.ModelSerializer):
             "response",
             "feedback",
             "created_at",
-            "parent_mlalgorithm",
+            "parent_algorithm",
         )

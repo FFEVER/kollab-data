@@ -17,7 +17,6 @@ from apps.api.serializers import RecAlgorithmStatusSerializer
 from apps.api.models import RecRequest
 from apps.api.serializers import RecRequestSerializer
 
-from apps.ml.registry import MLRegistry
 from recommender.wsgi import registry
 
 
@@ -28,7 +27,7 @@ class EndpointViewSet(
     queryset = Endpoint.objects.all()
 
 
-class MLAlgorithmViewSet(
+class RecAlgorithmViewSet(
     mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet
 ):
     serializer_class = RecAlgorithmSerializer
@@ -36,7 +35,7 @@ class MLAlgorithmViewSet(
 
 
 def deactivate_other_statuses(instance):
-    old_statuses = RecAlgorithmStatus.objects.filter(parent_mlalgorithm=instance.parent_algorithm,
+    old_statuses = RecAlgorithmStatus.objects.filter(parent_algorithm=instance.parent_algorithm,
                                                      created_at__lt=instance.created_at,
                                                      active=True)
     for i in range(len(old_statuses)):
@@ -44,7 +43,7 @@ def deactivate_other_statuses(instance):
     RecAlgorithmStatus.objects.bulk_update(old_statuses, ["active"])
 
 
-class MLAlgorithmStatusViewSet(
+class RecAlgorithmStatusViewSet(
     mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet,
     mixins.CreateModelMixin
 ):
@@ -61,7 +60,7 @@ class MLAlgorithmStatusViewSet(
             raise APIException(str(e))
 
 
-class MLRequestViewSet(
+class RecRequestViewSet(
     mixins.RetrieveModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet,
     mixins.UpdateModelMixin
 ):
@@ -83,7 +82,7 @@ class PredictView(views.APIView):
 
         if len(algs) == 0:
             return Response(
-                {"status": "Error", "message": "ML algorithm is not available"},
+                {"status": "Error", "message": "Recommend algorithm is not available"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -97,15 +96,15 @@ class PredictView(views.APIView):
         prediction = algorithm_object.compute_prediction(request.data)
 
         label = prediction["label"] if "label" in prediction else "error"
-        ml_request = RecRequest(
+        rec_request = RecRequest(
             input_data=json.dumps(request.data),
             full_response=prediction,
             response=label,
             feedback="",
-            parent_mlalgorithm=target_algorithm,
+            parent_algorithm=target_algorithm,
         )
-        ml_request.save()
+        rec_request.save()
 
-        prediction["request_id"] = ml_request.id
+        prediction["request_id"] = rec_request.id
 
         return Response(prediction)

@@ -11,7 +11,7 @@ class RecAlgorithmAdmin(admin.ModelAdmin):
     list_display = ('name', 'parent_endpoint', 'status', 'description', 'version', 'owner', 'created_at')
 
     def status(self, obj):
-        return RecAlgorithmStatus.objects.filter(parent_mlalgorithm=obj).last().status
+        return RecAlgorithmStatus.objects.filter(parent_algorithm=obj).last().status
 
 
 class RecAlgorithmStatusAdmin(admin.ModelAdmin):
