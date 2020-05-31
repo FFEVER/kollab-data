@@ -23,6 +23,7 @@ from apps.ml.project_recommender.interacted_projects_based import InteractedProj
 from apps.ml.project_recommender.fields_or_interacted_based import FieldsOrInteractedBased
 from apps.ml.related_project.project_fields_based import ProjectFieldsBased
 from apps.ml.user_recommender.user_to_project_fields_based import UserToProjectFieldsBased
+from apps.ml.project_recommender.similar_user_based import SimilarUserBased
 
 try:
     registry = RecRegistry()  # create ML registry
@@ -77,6 +78,16 @@ try:
                            owner=utpfb.owner,
                            algorithm_description=utpfb.description,
                            algorithm_code=inspect.getsource(UserToProjectFieldsBased))
+
+    sub = SimilarUserBased()
+    registry.add_algorithm(endpoint_name=sub.endpoint_name,
+                           algorithm_object=sub,
+                           algorithm_name=sub.algorithm_name,
+                           algorithm_status=sub.status,
+                           algorithm_version=sub.version,
+                           owner=sub.owner,
+                           algorithm_description=sub.description,
+                           algorithm_code=inspect.getsource(SimilarUserBased))
 
 except Exception as e:
     print("Exception while loading the algorithms to the registry,", str(e))
