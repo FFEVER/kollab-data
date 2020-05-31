@@ -1,3 +1,5 @@
+from random import randrange
+
 from django.db import transaction
 import json
 from numpy.random import rand
@@ -71,12 +73,10 @@ class RecRequestViewSet(
 class PredictView(views.APIView):
     def post(self, request, endpoint_name, format=None):
 
-        algorithm_status = self.request.query_params.get("status", "production")
+        # algorithm_status = self.request.query_params.get("status", "production")
         algorithm_version = self.request.query_params.get("version")
 
-        algs = RecAlgorithm.objects.filter(parent_endpoint__name=endpoint_name, status__status=algorithm_status,
-                                           status__active=True)
-
+        algs = RecAlgorithm.objects.filter(parent_endpoint__name=endpoint_name, status__active=True)
 
         if algorithm_version is not None:
             algs = algs.filter(version=algorithm_version)
@@ -87,9 +87,10 @@ class PredictView(views.APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        if algorithm_status == "ab_testing":
-            alg_index = 0 if rand() < 0.5 else 1
-            target_algorithm = algs[alg_index]
+        ab_algs = algs.filter(status__status="ab_testing")
+        if len(ab_algs) > 1:
+            alg_index = randrange(len(ab_algs))
+            target_algorithm = ab_algs[alg_index]
         else:
             target_algorithm = algs.last()
 
