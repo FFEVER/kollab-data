@@ -93,8 +93,11 @@ class RelationCalcByInteractions(RelationCalculator):
 
             sim_list = m_sims + s_sims + f_sims + v_sims
             weight_list = m_weights + s_weights + f_weights + v_weights
-            weighted_avg = np.average(sim_list, weights=weight_list)
 
+            if sum(weight_list) == 0:
+                return 0
+
+            weighted_avg = np.average(sim_list, weights=weight_list)
             return weighted_avg
 
         except Exception as e:
@@ -152,6 +155,9 @@ class UserToUserCalcByInteractions(RelationCalculator):
             return 0
 
     def calc_sim_by_interacted_projects(self, project_list_1, project_list_2):
+        if len(project_list_1) == 0 or len(project_list_2) == 0:
+            return 0
+
         unique = list(set(project_list_1).union(project_list_2))
         sim_list_1 = list()
         sim_list_2 = list()
@@ -160,20 +166,21 @@ class UserToUserCalcByInteractions(RelationCalculator):
                 continue
 
             # Similarity vector of user 1
-            sim_temp = []
+            sim_temp_1 = []
             for p1_id in project_list_1:
                 if p1_id not in self.project_df:
                     continue
-                sim_temp.append(self.project_df.loc[p1_id, p_id])
-            sim_list_1.append(max(sim_temp))
+                sim_temp_1.append(self.project_df.loc[p1_id, p_id])
 
             # Similarity vector of user 2
-            sim_temp = []
+            sim_temp_2 = []
             for p2_id in project_list_2:
                 if p2_id not in self.project_df:
                     continue
-                sim_temp.append(self.project_df.loc[p2_id, p_id])
-            sim_list_2.append(max(sim_temp))
+                sim_temp_2.append(self.project_df.loc[p2_id, p_id])
+
+            sim_list_1.append(max(sim_temp_1))
+            sim_list_2.append(max(sim_temp_2))
 
         val_out = 1 - cosine(sim_list_1, sim_list_2)
         return val_out
@@ -202,11 +209,11 @@ class UserProjectCalcBySimilarUsers(RelationCalculator):
 
             all_projects = list(all_projects)
 
-            weighted_sims = self.calc_weighted_sims(all_projects, all_users, all_weights)
-
             # print("all projects", all_projects)
             # print("users:", all_users)
             # print("weights:", all_weights)
+            weighted_sims = self.calc_weighted_sims(all_projects, all_users, all_weights)
+
             # print("weighted sims:", weighted_sims)
 
             return all_projects, weighted_sims

@@ -162,7 +162,8 @@ class UserProjectRelationFromSimilarUsers(Relationship):
 
     def get_k_similar_users(self, target_user):
         similar_users_df = self.user_df.loc[[target_user]].melt().sort_values('value', ascending=False)
-        similar_users = similar_users_df.head(self.k)['variable'].to_list()
+        filtered_similar_users_df = similar_users_df.loc[similar_users_df['value'] != 0]
+        similar_users = filtered_similar_users_df.head(self.k)['variable'].to_list()
         return similar_users
 
     def fill_relations(self):
