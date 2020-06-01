@@ -28,8 +28,15 @@ class Project(models.Model):
     project_status = models.SmallIntegerField(default=1, null=True)
     fields = ArrayField(ArrayField(models.IntegerField(blank=True, null=True)), default=list)
     tags = ArrayField(models.CharField(max_length=50, blank=True, null=True), default=list)
+    members = ArrayField(models.IntegerField(blank=True, null=True), default=list)
+    starred_by = ArrayField(models.IntegerField(blank=True, null=True), default=list)
+    viewed_by = ArrayField(models.IntegerField(blank=True, null=True), default=list)
+    followed_by = ArrayField(models.IntegerField(blank=True, null=True), default=list)
     created_at = models.DateTimeField()
     updated_at = models.DateTimeField()
+
+    def interacted_users(self):
+        return list(set(self.members + self.starred_by + self.viewed_by + self.followed_by))
 
     def __str__(self):
         return self.title

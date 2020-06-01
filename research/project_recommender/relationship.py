@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 
 from apps.kstorage.models import User, Project
 from research.project_recommender.relation_calculator import RelationCalcByFields, RelationCalcByInteractions, \
-    UserToUserCalcByInteractions, UserProjectCalcBySimilarUsers
+    UserToUserCalcByInteractions, UserProjectCalcBySimilarUsers, ProjectUserCalcBySimilarProjects
 
 
 class Relationship(ABC):
@@ -176,8 +176,6 @@ class UserProjectRelationFromSimilarUsers(Relationship):
             for i in range(len(projects)):
                 if not self.projects.filter(id=projects[i]).exists():
                     continue
-                if projects[i] not in projects:
-                    continue
                 self.relations_df.loc[user.id, projects[i]] = sims[i]
         return self.relations_df
 
@@ -186,3 +184,46 @@ class UserProjectRelationFromSimilarUsers(Relationship):
 
     def col_type(self):
         return Project.__name__
+
+
+class ProjectUserRelationFromSimilarProjects(Relationship):
+    '''
+        Handle relations for projects and users calculated using similar projects (collaborative)
+    '''
+
+    def __init__(self, index=Project.objects.values_list('id', flat=True),
+                 columns=User.objects.values_list('id', flat=True),
+                 calculator_class=ProjectUserCalcBySimilarProjects, k=10):
+        super().__init__(index, columns, calculator_class)
+        self.users = User.objects.all()
+        self.projects = Project.objects.all()
+        self.project_df = self.calculator.project_df
+        self.k = k
+
+    def get_k_similar_projects(self, target_project):
+        similar_projects_df = self.project_df.loc[[target_project]].melt().sort_values('value', ascending=False)
+        filtered_similar_projects_df = similar_projects_df.loc[similar_projects_df['value'] != 0]
+        similar_projects = filtered_similar_projects_df.head(self.k)['variable'].to_list()
+        return similar_projects
+
+    def fill_relations(self):
+        self.relations_df.fillna(0, inplace=True)
+        for project in self.projects:
+            similar_projects = self.get_k_similar_projects(project.id)
+            users, sims = self.calculator.calc_relation(project.id, similar_projects)
+            # print("users", users)
+            # print("sims", sims)
+            for i in range(len(users)):
+                if not self.users.filter(id=users[i]).exists():
+                    continue
+                if users[i] in project.members:
+                    # Do not recommend the user that already in the target project
+                    continue
+                self.relations_df.loc[project.id, users[i]] = sims[i]
+        return self.relations_df
+
+    def row_type(self):
+        return Project.__name__
+
+    def col_type(self):
+        return User.__name__

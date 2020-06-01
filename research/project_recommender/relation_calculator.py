@@ -247,18 +247,66 @@ class UserProjectCalcBySimilarUsers(RelationCalculator):
 
         return weighted_sims
 
-# class UserProjectCalcBySimilarProjects(RelationCalculator):
-#     def __init__(self):
-#         self.project_df = pickle.loads(
-#             Relation.objects.filter(row_type=Project.__name__, col_type=Project.__name__).last().data_frame)
-#
-#     def calc_relation(self, project, user):
-#         pass
-#         # p_id = project.id
-#         # related_projects = self.find_related_projects(project.id)
-#         # for p in related_projects
-#
-#     def find_related_projects(self, project_id):
-#         related_projects = self.project_df.loc[[project_id]].melt().sort_values('value', ascending=False)
-#         related_projects.head(100)['variable'].to_list()
-#         return related_projects
+
+class ProjectUserCalcBySimilarProjects(RelationCalculator):
+
+    def __init__(self):
+        self.project_df = pickle.loads(
+            Relation.objects.filter(row_type=Project.__name__, col_type=Project.__name__,
+                                    alg_type=RelationCalcByFields.__name__).last().data_frame)
+
+        self.user_df = pickle.loads(
+            Relation.objects.filter(row_type=User.__name__, col_type=User.__name__,
+                                    alg_type=RelationCalcByFields.__name__).last().data_frame)
+
+    def calc_relation(self, target_project_id, similar_projects):
+        try:
+            all_users = set()
+            all_projects = dict()
+            all_weights = dict()
+            for p in similar_projects:
+                project = Project.objects.get(pk=p)
+                users = project.interacted_users()
+                all_projects[project.id] = users
+                all_weights[project.id] = self.project_df.loc[target_project_id, p]
+                all_users = all_users.union(users)
+
+            all_users = list(all_users)
+
+            print("all users", all_users)
+            print("projects:", all_projects)
+            print("weights:", all_weights)
+            weighted_sims = self.calc_weighted_sims(all_users, all_projects, all_weights)
+
+            print("weighted sims:", weighted_sims)
+
+            return all_users, weighted_sims
+
+        except Exception as e:
+            traceback.print_exc()
+            print("Exception while calculating relation,", e)
+            return [], []
+
+    def max_sim(self, u_target, u_list):
+        sim = 0
+        if u_target not in self.user_df:
+            return sim
+        for u in u_list:
+            if u not in self.user_df:
+                continue
+            new_sim = self.user_df.loc[u_target, u]
+            if new_sim > sim:
+                sim = new_sim
+        return sim
+
+    def calc_weighted_sims(self, all_users, all_projects, all_weights):
+        weighted_sims = []
+        for user_id in all_users:
+            sim_temp = []
+            for key in all_projects:
+                sim = self.max_sim(user_id, all_projects[key])
+                sim_temp.append(sim)
+
+            weighted_sims.append(np.average(sim_temp, weights=list(all_weights.values())))
+
+        return weighted_sims
