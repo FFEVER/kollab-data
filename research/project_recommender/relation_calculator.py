@@ -273,12 +273,12 @@ class ProjectUserCalcBySimilarProjects(RelationCalculator):
 
             all_users = list(all_users)
 
-            print("all users", all_users)
-            print("projects:", all_projects)
-            print("weights:", all_weights)
+            # print("all users", all_users)
+            # print("projects:", all_projects)
+            # print("weights:", all_weights)
             weighted_sims = self.calc_weighted_sims(all_users, all_projects, all_weights)
 
-            print("weighted sims:", weighted_sims)
+            # print("weighted sims:", weighted_sims)
 
             return all_users, weighted_sims
 
