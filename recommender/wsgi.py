@@ -11,6 +11,8 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
+from apps.ml.user_recommender.similar_interacted_projects_based import SimilarInteractedProjectsBased
+
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'recommender.settings')
 
 application = get_wsgi_application()
@@ -88,6 +90,16 @@ try:
                            owner=sub.owner,
                            algorithm_description=sub.description,
                            algorithm_code=inspect.getsource(SimilarUserBased))
+
+    sipb = SimilarInteractedProjectsBased()
+    registry.add_algorithm(endpoint_name=sipb.endpoint_name,
+                           algorithm_object=sipb,
+                           algorithm_name=sipb.algorithm_name,
+                           algorithm_status=sipb.status,
+                           algorithm_version=sipb.version,
+                           owner=sipb.owner,
+                           algorithm_description=sipb.description,
+                           algorithm_code=inspect.getsource(SimilarInteractedProjectsBased))
 
 except Exception as e:
     print("Exception while loading the algorithms to the registry,", str(e))
